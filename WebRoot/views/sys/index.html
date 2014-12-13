@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>用户登录</title>
+    <link rel="shortcut icon" href="../resources/images/favicon.ico" type="image/x-icon" />
+    <link href="../resources/style/page.prompt.css" rel="stylesheet" />
+    <script src="../resources/js-plug/jquery/jquery-1.9.1.js"></script>
+    <script src="../resources/js-plug/md5.js"></script>
+    <script src="../resources/js-plug/jquery.prompt/jquery.prompt.js"></script>
+    <link href="../resources/style/sys.css" rel="stylesheet" />
+    <script src="../resources/js-plug/sys.js"></script>
+    
+    <link href="../resources/style/login.style.css" rel="stylesheet" />
+    <link href="../resources/style/index2-style.css" rel="stylesheet" />
+
+    <script>
+    function forgetPwd(){
+    	_showMessage("请联系系统管理员","information",5000);
+    }
+    function showPrompt(options) {
+        $.prompt(options);
+    }
+    </script>
+</head>
+<body class="new-logoin">
+    <div class="new-login-index">
+        <div class="m-header new-login-index-header">
+            <div class="m-header-inner margin_auto">
+                <!-- <div class="m-header-i-logo fn-left">
+                    <div class="m-header-i-logo">
+                        <div class="logo">
+                            <img src="../resources/images/public/index2-log.png" alt="" />
+                        </div>
+                    </div>
+                    <div class="fn-clear"></div>
+                </div>
+                <div class="m-header-i-font fn-right">
+                    <div class="m-header-i-fontnum">
+                        <div class="headerfontnum">
+                            <img src="../resources/images/public/index2-head-tel.png" alt="" />
+                        </div>
+                    </div>
+                </div> -->
+                <div class="fn-clear"></div>
+            </div>
+        </div>
+        <div class="new-login-index-center">
+        <form class="form-horizontal" role="form" name="loginForm">
+            <div class="small-login-dialog">
+                <div class="dialog-head">
+                    <div class="dialog-head-left">用户登录</div>
+                </div>
+                <div class="dialog-usename">
+                <input type="text" id="username" maxlength="20" name="code" class="form-control dialog-input" placeholder="用户名"/>
+                </div>
+                <div class="dialog-password">
+				<input type="password" id="password" name="password" class="form-control dialog-input" placeholder="密码" onkeypress="if(event.keyCode==13){goLogin();}"  />
+				</div>
+                <div class="dialog-small-text">
+                    <div class="fl">
+                    <input type="checkbox" id="rememberMe" name="rememberMe" onclick="this.value=this.checked?true:false;"/>
+                    <label for="remember">记住账号</label></div>
+                    <div class="fr"><a href="javascript:;" onclick="forgetPwd();">忘记密码</a></div>
+                    <div class="cl"></div>
+                </div>
+                <button type="button" class="login-button" style="border: 0;" onclick="goLogin()">登录</button>
+            </div>
+        </form>
+        </div>
+        <div class="m-big-footer">
+            <div class="footer-main margin_auto">
+                <div class="footer-copyright">Copyright© 2014 版权所有 </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        var rememberMePassword="";
+        $(function () 
+        {
+        	$.ajaxSetup ({cache: false });
+        	
+        	/* var form=document.forms["loginForm"];
+        	$.getJSON(getContextPath()+"/api/authx/getRememberMe",{},function(resultBean)
+   			{
+   				if(resultBean.success)
+   				{
+   					form.code.value=resultBean.data[0];
+   					form.password.value= resultBean.data[1];
+   					form.rememberMe.checked=true;
+   					rememberMePassword=resultBean.data[1];
+   				}else{
+   					form.code.value="";
+   					form.password.value= "";
+   					form.rememberMe.checked=false;
+   				}
+   				form.rememberMe.value=form.rememberMe.checked;
+   			}); */
+        });
+        
+        function goLogin() 
+        {
+        	if($("#username").val()==""){alert("用户名不能为空");return;}
+        	if($("#password").val()==""){alert("密码不能为空");return;}
+        	if(getLength($("#username").val())>20){alert("用户名不能大于20");return;}
+        	var pwd=$("#password").val();
+        	if(rememberMePassword=="" || rememberMePassword!=pwd){pwd=encryptByMd5(pwd);}
+	       	topLoading();
+	       	$.post(getContextPath()+"/api/authx/pc/login",{code:$("#username").val(),password:pwd,rememberMe:$("#rememberMe").val()},function(resultBean, status, xhRequest)
+	   		{
+	       		topLoaded();
+	       	//	if(!handleAjaxRequest(resultBean, status,xhRequest))return;
+	         //   if(!resultBean.success){alert(resultBean.message);return;}
+	       		if(!resultBean.success){
+	       		    _message(resultBean.message,function(){},"error");
+	       			return;
+	       	     }
+	       		window.location.href = getContextPath()+"/views/sys/main.html";
+	   		},'json');	   					
+        }        
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+/*small-login页面*/
+.fl{
+	float: left;
+}
+.fr{
+	float: right;
+}
+.cl{
+	clear: both;
+}
+.new-login-index-center{
+	width: 1000px;
+	margin: 130px auto 80px auto;
+}
+.small-login-dialog{
+	width: 342px;
+	height: 274px;
+	margin: 0 auto;
+}
+.dialog-head-left{
+	font-size: 22px;
+	color: #666666;
+	line-height: 28px;
+}
+.dialog-head-close{
+	width: 27px;
+	height: 28px;
+	background: url(../images/dailog-img/dialog-close.png) no-repeat;
+	cursor: pointer;
+}
+.dialog-head{
+	margin-bottom: 38px;
+}
+.dialog-usename{
+	width: 284px;
+	height: 36px;
+	background: url(../images/dialog-img/dialog-usename.png) no-repeat;
+	margin-bottom: 10px;
+	padding-left: 55px;
+	padding-top: 5px;
+}
+.dialog-password{
+	width: 284px;
+	height: 36px;
+	background: url(../images/dialog-img/dialog-password.png) no-repeat;
+	margin-bottom: 10px;
+	padding-left: 55px;
+	padding-top: 5px;
+}
+.dialog-input{
+	width: 280px;
+	height: 30px;
+	border: 0px;
+	line-height: 30px;
+	outline: none;
+	font-size: 14px;
+}
+.dialog-small-text{
+	font-size: 12px;
+	color: #666666;
+	line-height: 28px;
+	font-family: "微软雅黑";
+	cursor: pointer;
+	padding-right: 5px;
+}
+.dialog-small-text a:link,.dialog-small-text a:visited{
+	color: #666666;
+	text-decoration: none;
+}
+.dialog-small-text input{
+	position: relative;
+	top:2px;
+}
+.login-button{
+	width: 338px;
+	height: 40px;
+	background-color: #588625;
+	color: white;
+	font-size: 22px;
+	line-height: 40px;
+	text-align: center;
+	margin: 6px 0px;
+	cursor: pointer;
+}
+.regisiter-new{
+	text-align: right;
+}
+.new-logoin{
+    background-color: white;
+}
+.new-login-index-header{
+	background-color: white;
+	border-bottom: 2px solid white;
+	padding-bottom: 10px;
+}

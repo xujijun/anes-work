@@ -1,0 +1,59 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
+body { line-height: 1; font-family: ����,'Microsoft YaHei'; font-size: 13px; background: #f2f2f2; overflow: hidden; }
+ol, ul { list-style: none; }
+blockquote, q { quotes: none; }
+    blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; }
+table { border-collapse: collapse; border-spacing: 0; }
+
+a { text-decoration: none; }
+
+.xyt-minW { min-width: 1000px; }
+.xyt-minH { min-height: 520px; }
+
+.fn-left { float: left; }
+.fn-right { float: right; }
+.fn-clear { clear: both; }
+.fn-pos-relative { position: relative; }
+.fn-pos-absolute { position: absolute; }
+
+.margin_auto { margin: 0 auto; width: 1000px; }
+
+.margin_t5 { margin-top: 5px; }
+.margin_t10 { margin-top: 10px; }
+.margin_t15 { margin-top: 5px; }
+.margin_t20 { margin-top: 20px; }
+
+.m-big-main { background: #f2f2f2; }
+
+.m-header { background: #f2f2f2; height: 100px; }
+.m-header-inner { position: relative; z-index: 3; height: 100%; }
+/**[.m-header-inner]*/
+.m-header-i-logo { height: 100%; width: 590px; }
+    .m-header-i-logo .logo { padding-top: 13px; }
+    .m-header-i-logo .headerfont { padding: 30px 0px 0px 25px; }
+.m-header-i-font { height: 100%; width: 410px; }
+.m-header-i-fontnum { height: 100%; width: 100%; }
+    .m-header-i-fontnum .headerfontnum { padding-top: 38px; text-align: right; }
+/***[End .m-header-inner]*/
+
+.m-big-content { background: url(../images/login/c-login-bg.gif) repeat-x top; height: 420px; }
+.m-content { height: 100%; }
+.m-content-inner { height: 100%; background: url(../images/login/c-login-msgbg.jpg) no-repeat left bottom; position: relative; }
+    .m-content-inner .content-form { height: 436px; width: 556px; background: url(../images/login/c-login.png) no-repeat; position: absolute; right: 1px; }
+.content-form .form-panel { width: 250px; }
+.form-panel-title { height: 78px; }
+.form-group { height: 40px; margin: 10px 0 10px 0; }
+    .form-group label { height: 35px; line-height: 35px; display: block; }
+    .form-group .input input { height: 33px; line-height: 33px; width: 176px; padding-left: 12px; font-size: 21px; background: #f6f6f6; border: 1px solid #cccccc; }
+.col-sm-offset-2 { text-align: right; }
+.col-sm-offset-1 { width: 190px; padding-left: 60px; }
+    .col-sm-offset-1 .checkbox { width: 80px; }
+    .col-sm-offset-1 .label { width: 80px; }
+    .col-sm-offset-1 a { color: #38a00a; }
+.form-footfont { width: 278px; height: 20px; padding-top: 30px; }
+.submit_btn { background: url(../images/login/c-but-login.jpg) no-repeat; border: 0px; width: 200px; height: 40px; font-size: 1.5em; color: #f2f2f2; }
+.m-big-footer { margin-top: 40px; }
+.footer-main { line-height: 30px; text-align: center; color: #999999; }
+    .footer-main .footer-inner a { text-decoration: none; padding: 0px 5px 0px 5px; color: #999999; }
