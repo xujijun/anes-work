@@ -46,7 +46,8 @@
             </div>
         </div>
         <div class="new-login-index-center">
-        <form class="form-horizontal" role="form" name="loginForm">
+        <!-- <form class="form-horizontal" role="form" name="loginForm"> -->
+        <form class="form-horizontal" name="loginForm">
             <div class="small-login-dialog">
                 <div class="dialog-head">
                     <div class="dialog-head-left">用户登录</div>
@@ -103,7 +104,7 @@
         {
         	if($("#username").val()==""){alert("用户名不能为空");return;}
         	if($("#password").val()==""){alert("密码不能为空");return;}
-        	if(getLength($("#username").val())>20){alert("用户名不能大于20");return;}
+        	if($("#username").val().length>20){alert("用户名不能大于20");return;}
         	var pwd=$("#password").val();
         	if(rememberMePassword=="" || rememberMePassword!=pwd){pwd=encryptByMd5(pwd);}
 	       	topLoading();

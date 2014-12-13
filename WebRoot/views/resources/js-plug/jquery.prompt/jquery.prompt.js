@@ -4,10 +4,10 @@
             var _type = options._type || 'MsgDialog';
             var _url = options._url || "";
             var _title = options._title || "信息弹出框";
-            var _dialogH = options._dialogH || 490;
+            //var _dialogH = options._dialogH || 490;
             var _dialogW = options._dialogW || 600;
             var _msg = options._msg || "";
-            var _data = options._data || {};
+            //var _data = options._data || {};
             var _countdown = options._countdown || false;
             var _times = options._times || 3000;
             var _msgicon = options._msgicon || "success";
@@ -102,7 +102,7 @@
                     //【Dialog】 弹出框 操作代码段
                     if (_type === "Dialog") {
                         var $elDialogdialog = $(".dialog-backdrop");
-                        var randomNum = Math.floor(Math.random() * (2014 + 1));
+                        //var randomNum = Math.floor(Math.random() * (2014 + 1));
                         //console.log(_url.lastIndexOf('?') == 0);
                         /*if (_url.lastIndexOf('?') == 0) {
                             _url += ("?vNum=" + randomNum);
