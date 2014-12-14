@@ -24,8 +24,8 @@ public class CommonConstants
 
 	public static class Boolean
 	{
-		public final static String TRUE = "Y";
-		public final static String FALSE = "N";
+		public final static String TRUE = "TRUE";
+		public final static String FALSE = "FALSE";
 	}
 
 	public static class UserType

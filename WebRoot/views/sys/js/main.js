@@ -47,30 +47,6 @@ $(function(){
 		}
 	
 	}
-	
-	 /*$.ajax({
-         async: false,
-         url: getContextPath()+"/api/sys/user/getUser",  // 跨域URL
-         type: 'POST',
-         dataType: 'jsonp',
-         jsonp: 'callback',
-         data: {},
-         timeout: 5000,
-         beforeSend: function () {
-             //jsonp 方式此方法不被触发。原因可能是dataType如果指定为jsonp的话，就已经不是ajax事件了
-         },
-         success: function (resultBean, status, xhRequest) {
-        	 topLoaded();    
-     		if(!handleAjaxRequest(resultBean, status,xhRequest))return;
-     		$("#userNameLabel").html(resultBean.data.name);
-     		buildTreeMenu(resultBean.data.user.menuList);
-         },
-         complete: function (XMLHttpRequest, textStatus) {
-         },
-         error: function (xhr) {
-             alert("请求出错(请检查相关度网络状况.)" + xhr);
-         }
-     }); */
 });
 
 function goLogout() {
@@ -78,7 +54,6 @@ function goLogout() {
     $.getJSON(getContextPath() + "/api/authx/logout", {}, function (resultBean, status, xhRequest) {
         topLoaded();
         if (!handleAjaxRequest(resultBean, status, xhRequest)) return;
-        //top.document.location.href = getContextPath() + "/front/sys/index.html";
         top.document.location.href = getContextPath() + "/views/index.html";
     });
 }
@@ -138,6 +113,6 @@ var setting = {
 // 修改密码
 function modPwd(){
 	var temp_url = getContextPath() + "/views/sys/modifypwd.html";
-    _Dialog('新增用户',temp_url);
+    _Dialog('修改密码',temp_url);
     
 }

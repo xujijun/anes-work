@@ -3,6 +3,63 @@ function getContextPath()
 	return "/anes-work";
 }
 
+//未登录。直接给页面加个白色蒙板
+checkLoginError_addbackdrop=function(){
+	var Login_Backdrop = '<div class="login-backdrop"></div>';
+	$(Login_Backdrop).appendTo('body');
+};
+
+function handleAjaxRequest(resultBean, status, XMLHttpRequest)
+{
+	if(!resultBean.success)
+	{
+		if(resultBean.messageCode=="01")
+		{
+			checkLoginError_addbackdrop();
+			alert(resultBean.message);
+			window.top.location.href=getContextPath()+"/views/";
+			return false;
+		}else if(resultBean.messageCode=="02")
+		{
+			alert(resultBean.message);
+			return false;
+		}else if(resultBean.messageCode=="03")
+		{
+			alert(resultBean.message);
+			return false;
+		}
+		alert(resultBean.message);
+	}
+	var ajaxRequestChecking = XMLHttpRequest.getResponseHeader("AJAX_REQUEST_CHECKING");
+	if(ajaxRequestChecking!=null)
+	{
+		if(ajaxRequestChecking=="01")
+		{
+			checkLoginError_addbackdrop();
+			alert('您未登录或会话已过期');
+			window.top.location.href=getContentPath()+"/views/";
+			return false;
+		}else if(ajaxRequestChecking=="02"){
+			alert('您没有此模块的访问权限');
+			return false;
+		}else if(ajaxRequestChecking=="03"){
+			alert('系统出错');
+			return false;
+		}
+	}
+	var ajaxRequestException = XMLHttpRequest.getResponseHeader("AJAX_REQUEST_EXCEPTION");
+	if(ajaxRequestException!=null)
+	{
+		alert(ajaxRequestException);
+		return false;
+	}
+	if (status == "error") 
+	{
+		alert('系统出错');
+		return false;
+	}
+	return resultBean.success;
+}
 
 function topLoading()
 {
