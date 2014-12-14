@@ -7,15 +7,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * @description: 标注是否需要检查session
- * @date:
- */
-
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-public @interface SessionChecking {
-	boolean isCheck() default true;
+public @interface PermissionChecking {
+	String id() default "";
+
+	String name() default "";
+
+	String equals() default "";
 }

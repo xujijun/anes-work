@@ -11,8 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)	//保持性策略：对VM有效
 @Documented	//表示此注解可以被文档化
 @Inherited	//如果这个标注被用于一个类，则它的子类也继承了这个标注
-public @interface SysMenu
-{
+public @interface SysMenu {
 	/**
 	 * 整个系统唯一
 	 */
@@ -38,5 +37,5 @@ public @interface SysMenu
 	 */
 	String uri() default "";
 
-	//String equals() default "";
+	String equals() default "";
 }

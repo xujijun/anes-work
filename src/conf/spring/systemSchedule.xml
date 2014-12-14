@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="startupTask" class="com.xjj.anes.schedule.StartupTask" />
+	<bean id="startupScheduledTask" class="org.springframework.scheduling.concurrent.ScheduledExecutorTask">
+		<property name="delay" value="3000" />
+		<property name="period" value="0" />
+		<property name="runnable" ref="startupTask" />
+	</bean>
+
+	<bean id="timerFactory" class="org.springframework.scheduling.concurrent.ScheduledExecutorFactoryBean">
+		<property name="scheduledExecutorTasks">
+			<list>
+				<ref local="startupScheduledTask" />
+			</list>
+		</property>
+	</bean>
+
+</beans>
