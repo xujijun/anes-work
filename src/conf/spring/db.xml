@@ -42,7 +42,7 @@
 </bean>
  
 <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
-   <property name="basePackage" value="com.xjj.anes.mapper"/>   
+   <property name="basePackage" value="com.xjj.anes.dao"/>   
    <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
 </bean>
   

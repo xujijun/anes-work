@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50051
 File Encoding         : 65001
 
-Date: 2014-12-14 22:55:37
+Date: 2014-12-15 23:38:39
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -45,7 +45,7 @@ CREATE TABLE `t_sys_menu` (
   `id` varchar(32) collate utf8_unicode_ci NOT NULL,
   `name` varchar(64) collate utf8_unicode_ci NOT NULL COMMENT '菜单名称',
   `parent_id` varchar(32) collate utf8_unicode_ci default NULL,
-  `url` varchar(100) collate utf8_unicode_ci default NULL COMMENT '链接地址',
+  `uri` varchar(100) collate utf8_unicode_ci default NULL COMMENT '链接地址',
   `order_no` tinyint(4) default NULL,
   `status` varchar(3) collate utf8_unicode_ci NOT NULL,
   `remark` varchar(100) collate utf8_unicode_ci default NULL,
