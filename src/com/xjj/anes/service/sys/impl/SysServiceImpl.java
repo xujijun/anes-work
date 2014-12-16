@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import com.xjj.anes.annotation.PermissionChecking;
 import com.xjj.anes.annotation.SysMenu;
 import com.xjj.anes.constants.CommonConstants;
+import com.xjj.anes.dao.sys.PermissionMapper;
 import com.xjj.anes.entity.sys.Menu;
 import com.xjj.anes.service.sys.MenuService;
 import com.xjj.anes.service.sys.SysService;
@@ -31,6 +32,9 @@ public class SysServiceImpl implements SysService {
 	
 	@Resource
 	private MenuService menuService;
+	
+	@Resource
+	private PermissionMapper permissionMapper;
 	
 	@Override
 	public boolean txScanAnnotations() {

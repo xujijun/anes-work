@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xjj.anes.dao.sys.PermissionMapper">
+
+<sql id="selectColums">
+	ID,
+	MENU_ID as menuId,
+	NAME,
+	CLS,
+	METHODS,
+</sql>
+
+<sql id="selectColumsA">
+	A.ID,
+	A.MENU_ID as menuId,
+	A.NAME,
+	A.CLS,
+	A.METHODS,
+</sql>
+
+
+<select id="listAll" resultType="permission">
+	SELECT
+	<include refid="selectColums" />
+	FROM T_SYS_PERMISSION
+</select>
+
+<insert id="insert" parameterType="permission">
+	INSERT INTO T_SYS_PERMISSION 
+	(
+		ID,
+		MENU_ID,
+		NAME,
+		CLS,
+		METHODS,
+	)
+	values
+	(
+		#{id},
+		#{menuId},
+		#{name},
+		#{cls},
+		#{methods},
+	)
+</insert>
+
+<update id="update" parameterType="permission">
+	UPDATE T_SYS_PERMISSION
+	<set>
+		<if test="menuId != null">MENU_ID=#{menuId},</if>
+		<if test="name != null">NAME=#{name},</if>
+		<if test="cls != null">CLS=#{cls},</if>
+		<if test="methods != null">METHODS=#{methods},</if>
+	</set>
+	WHERE ID=#{id}
+</update>
+
+<delete id="delete" parameterType="string">
+	delete from T_SYS_PERMISSION WHERE ID = #{id}
+</delete>
+
+	<!-- 删除一条记录，及其关联表中的相关记录 -->
+	<delete id="deletePermissionAndRel">
+		DELETE FROM t_sys_role_permission WHERE permission_id=#{id};
+		DELETE FROM t_sys_permission WHERE id=#{id}
+	</delete>
+	
+<delete id="deleteRolePermission" parameterType="string">
+	delete from T_SYS_ROLE_PERMISSION WHERE PERMISSION_ID = #{id}
+</delete>
+
+<select id="getPermissionByMenuId" resultType="permission" parameterType="string">
+	SELECT
+	<include refid="selectColums" />
+	FROM T_SYS_PERMISSION WHERE MENU_ID IN (#{menuIds} )
+</select>
+
+<select id="getPermissionByRoleId" resultType="permission" parameterType="string">
+	SELECT
+	<include refid="selectColumsA" />
+	FROM T_SYS_PERMISSION A left join T_SYS_ROLE_PERMISSION TSRP ON  TSRP.PERMISSION_ID=A.ID  AND TSRP.ROLE_ID=#{roleId} AND TSRP.STATUS='ON'
+</select>
+
+<select id="getPermissions" parameterType="list" resultType="hashmap">
+	select id as "id", name as "name", menu_id as "pid",'false' as "parent" 
+		from t_sys_permission 
+		where id in(
+			<foreach collection="list" item="id" separator=",">
+				#{id}
+			</foreach>
+		)
+</select>
+</mapper>

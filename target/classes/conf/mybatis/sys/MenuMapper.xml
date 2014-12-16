@@ -89,6 +89,7 @@
 	<!-- 删除一条记录，及其关联表中的相关记录 -->
 	<delete id="deleteMenuAndRel">
 		DELETE FROM t_sys_role_menu WHERE menu_id=#{id};
+		DELETE FROM t_sys_permission WHERE menu_id=#{id};
 		DELETE FROM t_sys_menu WHERE id=#{id}
 	</delete>
 
