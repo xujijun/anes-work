@@ -13,7 +13,7 @@ import com.xjj.anes.constants.MenuConstants;
 
 @RestController
 @RequestMapping(value = CommonConstants.UriPrefix.API + MenuConstants.SYS + "/user/")
-@SysMenu(id = MenuConstants.Sys.SYS_USER, name = "用户管理", parent = MenuConstants.SYS, orderNo = 1, uri = "/views/sys/user/list.html")
+@SysMenu(id = MenuConstants.Sys.SYS_USER, name = "用户管理", parent = MenuConstants.SYS, orderNo = 10, uri = "/views/sys/user/list.html")
 public class UserController extends SysBaseController {
 
 	@RequestMapping(value = "getUser")

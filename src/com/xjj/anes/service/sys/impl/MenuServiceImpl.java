@@ -35,4 +35,34 @@ public class MenuServiceImpl implements MenuService {
 		return rb;
 	}
 
+	@Override
+	public ResultBean update(Menu entity)
+	{
+		ResultBean rb = new ResultBean();
+		int i = menuMapper.update(entity);
+		if (i <= 0)
+		{
+			rb.setSuccess(false);
+			rb.setMessage("更新失败");
+		}
+		rb.setMessage("更新成功");
+		
+		return rb;
+	}
+	
+	@Override
+	public ResultBean deleteMenuAndRel(String id) {
+		ResultBean rb = new ResultBean();
+		int i = menuMapper.deleteMenuAndRel(id);
+		if (i <= 0)
+		{
+			rb.setSuccess(false);
+			rb.setMessage("删除失败");
+		}else{
+			rb.setSuccess(true);
+			rb.setMessage("删除成功");
+		}
+		return rb;
+	}
+
 }

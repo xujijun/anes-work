@@ -3,6 +3,7 @@ package com.xjj.anes.service.sys.impl;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class SysServiceImpl implements SysService {
 	private MenuService menuService;
 	
 	@Override
-	public boolean scanAnnotations() {
+	public boolean txScanAnnotations() {
 		// TODO Auto-generated method stub
 		
 		boolean result = true;
@@ -44,6 +45,7 @@ public class SysServiceImpl implements SysService {
 		Map<String, Menu> menuMap = new HashMap<String, Menu>();
 		@SuppressWarnings("unchecked")
 		List<Menu> menuList = (List<Menu>) menuService.listAll().getData();
+		Set<String> menuIdSet = new HashSet<String>();
 		
 		for (Menu m : menuList)	{
 			menuMap.put(m.getId(), m);
@@ -53,6 +55,8 @@ public class SysServiceImpl implements SysService {
 		String menuId = null;
 		SysMenu sysMenu = null;
 		Menu menu = null;
+		
+		
 		PermissionChecking permissionChecking = null;
 		Method[] methods = null;
 		
@@ -64,6 +68,7 @@ public class SysServiceImpl implements SysService {
 				continue;
 			}
 			
+			//开始处理Menu
 			sysMenu = AnnotationUtils.findAnnotation(cls, SysMenu.class);
 			permissionChecking = AnnotationUtils.findAnnotation(cls, PermissionChecking.class);
 			if (sysMenu == null) {
@@ -79,32 +84,37 @@ public class SysServiceImpl implements SysService {
 			if(sysMenu!=null){
 				System.out.println(sysMenu.name());
 			}
-			
+
+			menu = new Menu();
 			menuId = sysMenu.id();
-			if (menuMap.containsKey(menuId)) { //Menu表已经存在该Menu ID
-				menu = menuMap.get(menuId);
+			if (StringUtils.isEmpty(menuId))
+			{
+				throw new RuntimeException("Loss id of Menu annotation at " + cls.getName());
+			}
+			menu.setId(menuId);
+			if (StringUtils.isEmpty(sysMenu.name()) && !StringUtils.isEmpty(sysMenu.id()))
+			{
+				throw new RuntimeException("Loss name of Menu annotation at " + cls.getName());
+			}
+			menu.setName(sysMenu.name());
+			menu.setParentId(sysMenu.parent());
+			menu.setOrderNo(sysMenu.orderNo());
+			menu.setUri(sysMenu.uri());
+			menu.setStatus(CommonConstants.Status.ACTIVE);
+			if (menuMap.containsKey(menuId)) { //Menu表已经存在该Menu ID，则update一下
+				//menu = menuMap.get(menuId);
+				menu.setUpdater(userName);
+				menu.setUpdateDt(dtNow);
+				menuService.update(menu);
 			} else{ //Menu表不存在该Menu ID，则添加到Menu表中
-				menu = new Menu();
-				if (StringUtils.isEmpty(menuId))
-				{
-					throw new RuntimeException("Loss id of Menu annotation at " + cls.getName());
-				}
-				menu.setId(menuId);
-				if (StringUtils.isEmpty(sysMenu.name()) && !StringUtils.isEmpty(sysMenu.id()))
-				{
-					throw new RuntimeException("Loss name of Menu annotation at " + cls.getName());
-				}
-				menu.setName(sysMenu.name());
-				menu.setParentId(sysMenu.parent());
-				menu.setOrderNo(sysMenu.orderNo());
-				menu.setUri(sysMenu.uri());
 				menu.setCreator(userName);
 				menu.setCreateDt(dtNow);
-				menu.setStatus(CommonConstants.Status.ACTIVE);
 				menuService.insert(menu);
-				menuMap.put(menu.getId(), menu);
 			}
+			menuMap.put(menu.getId(), menu);
+			menuIdSet.add(menuId);
 			
+			//处理Permissions
 			methods = cls.getDeclaredMethods();
 			for (Method method : methods){
 				permissionChecking = AnnotationUtils.findAnnotation(method, PermissionChecking.class);
@@ -112,6 +122,14 @@ public class SysServiceImpl implements SysService {
 					continue;
 				}
 				System.out.println(permissionChecking.name());
+			}
+		}
+		
+		//删除扫描列表中没有的Menu及其关联表
+		for (String id : menuMap.keySet()) {
+			if (!menuIdSet.contains(id)) {
+				log.info("Delete Menu[" + id + "] " + menuMap.get(id));
+				menuService.deleteMenuAndRel(id);
 			}
 		}
 		

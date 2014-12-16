@@ -13,7 +13,7 @@ public class StartupTask implements Runnable{
 	public void run()
 	{
 		//SysService sysService = CoreApplicationContext.getApplicationContext().getBean(SysService.class);
-		if (sysService.scanAnnotations())
+		if (sysService.txScanAnnotations())
 		{
 			//sysService.txAutoCreateDefaultSuperAdmin();
 		}
