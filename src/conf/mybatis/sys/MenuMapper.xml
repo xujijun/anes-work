@@ -93,6 +93,14 @@
 		DELETE FROM t_sys_menu WHERE id=#{id}
 	</delete>
 
+	<select id="listAll" resultType="menu">  
+        SELECT
+        <include refid="selectColumns" /> 
+        FROM T_SYS_MENU A  
+	</select>
+	
+	<!-- =======================有用分割线======================= -->
+	
 	<delete id="delete" parameterType="string">
 		<if test="_parameter != null">
 			UPDATE T_SYS_MENU SET STATUS = 'DEL' WHERE ID IN (#{_parameter})
@@ -105,11 +113,7 @@
 		FROM T_SYS_MENU A WHERE A.ID=#{id}
 	</select>
 
-	<select id="listAll" resultType="menu">  
-        SELECT
-        <include refid="selectColumns" /> 
-        FROM T_SYS_MENU A  
-	</select>
+
 	
 	<!-- 获取树形菜单 -->
 	<select id="loadTreeMenus" resultType="menu">

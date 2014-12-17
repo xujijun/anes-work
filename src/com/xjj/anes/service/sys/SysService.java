@@ -7,4 +7,9 @@ public interface SysService {
 	 * @return
 	 */
 	public boolean txScanAnnotations();
+	
+	/**
+	 * 创建缺省账号
+	 */
+	public void txCreateDefaultAccount();
 }

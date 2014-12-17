@@ -30,7 +30,7 @@ public class CommonConstants
 
 	public static class UserType
 	{
-		public final static String SYSTEM = "SYS";// 系统管理员
+		public final static String ADMIN = "ADMIN";// 系统管理员
 		public final static String COMMON = "COM";// 普通用户
 	}
 }

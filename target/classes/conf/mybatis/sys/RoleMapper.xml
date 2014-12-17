@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xjj.anes.dao.sys.RoleMapper">
+
+	<sql id="selectColumns">
+		A.ID,
+		A.NAME,
+		A.STATUS as status,
+		A.creator	as creator,
+		A.CREATE_DT as createDt,
+		A.UPDATER as updater,
+		A.UPDATE_DT as updateDt,	
+		A.REMARK as remark
+	</sql>
+	<!-- 插入列名 -->
+	<sql id="insertColumns">
+		<trim suffix="" suffixOverrides=",">
+			<if test="id != null">ID,</if>
+			<if test="name != null">NAME,</if>
+			<if test="status != null">STATUS,</if>
+			<if test="creator != null">creator,</if>
+			<if test="createDt != null">CREATE_DT,</if>
+			<if test="updater != null">UPDATER,</if>
+			<if test="updateDt != null">UPDATE_DT,</if>
+			<if test="remark != null">REMARK</if>
+		</trim>
+	</sql>
+	<!-- 插入列值 -->
+	<sql id="insertValues">
+		<trim suffix="" suffixOverrides=",">
+			<if test="id != null">#{id},</if>
+			<if test="name != null">#{name},</if>
+			<if test="status != null">#{status},</if>
+			<if test="creator != null">#{creator},</if>
+			<if test="createDt != null">#{createDt},</if>
+			<if test="updater != null">#{updater},</if>
+			<if test="updateDt != null">#{updateDt},</if>
+			<if test="remark != null">#{remark}</if>
+		</trim>
+	</sql>
+	<sql id="updateColumns">
+		<set>
+			<if test="name != null">NAME=#{name},</if>
+			<if test="status != null">STATUS=#{status},</if>
+			<if test="updater != null">UPDATER=#{updater},</if>
+			<if test="updateDt != null">UPDATE_DT=#{updateDt},</if>
+			<if test="remark != null">REMARK=#{remark}</if>
+		</set>
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="searchWhere">
+		<where>
+			<if test="entity.name != null and entity.name != ''">and A.NAME LIKE CONCAT('%',REPLACE(REPLACE(TRIM(#{entity.name}), '%', '/%'), '_', '/_'), '%') ESCAPE '/'</if>
+			<if test="entity.status != null and entity.status != ''">and A.STATUS=#{entity.status}</if>
+		</where>
+	</sql>
+	
+	<insert id="insert" keyProperty="id" parameterType="role">
+		INSERT INTO T_SYS_ROLE(
+		<include refid="insertColumns" />
+		)
+		VALUES(
+		<include refid="insertValues" />
+		)
+	</insert>
+
+	<update id="update" parameterType="role">
+		<if test="id != null">
+			UPDATE T_SYS_ROLE
+			<include refid="updateColumns" />
+			WHERE ID=#{id}
+		</if>
+	</update>
+
+	<delete id="delete" parameterType="string">
+		UPDATE T_SYS_ROLE SET STATUS="DEL" WHERE ID = #{id}
+	</delete>
+
+	<select id="select" parameterType="string" resultType="role">
+		SELECT
+		<include refid="selectColumns" />
+		FROM T_SYS_ROLE A WHERE ID=#{id}
+	</select>
+
+	<!-- id是否已经存在：0：不存在；>0：存在 -->
+	<select id="exists" resultType="int">
+		SELECT COUNT(*)	FROM t_sys_role WHERE id=#{id}
+	</select>
+	
+	<!-- 根据Role Id查找Menu Ids -->
+	<select id="selectMenuIdsByRoleId" resultType="string">
+		SELECT menu_id FROM t_sys_role_menu WHERE role_id=#{roleId}
+	</select>
+	
+	<!-- 根据Role Id查找Permission Ids -->
+	<select id="selectPermissionIdsByRoleId" resultType="string">
+		SELECT permission_id FROM t_sys_role_permission WHERE role_id=#{roleId}
+	</select>
+	
+	<!-- 插入到role_menu关系表 -->
+	<insert id="insertRoleMenu">
+		INSERT INTO t_sys_role_menu(
+			<trim suffix="" suffixOverrides=",">
+				<if test="id != null">id,</if>
+				<if test="roleId != null">role_id,</if>
+				<if test="menuId != null">menu_id</if>
+			</trim>
+		)
+		VALUES(
+			<trim suffix="" suffixOverrides=",">
+				<if test="id != null">#{id},</if>
+				<if test="roleId != null">#{roleId},</if>
+				<if test="menuId != null">#{menuId}</if>
+			</trim>
+		)
+	</insert>
+	
+	<!-- 插入到role_permission关系表 -->
+	<insert id="insertRolePermission">
+		INSERT INTO t_sys_role_permission(
+			<trim suffix="" suffixOverrides=",">
+				<if test="id != null">id,</if>
+				<if test="roleId != null">role_id,</if>
+				<if test="permissionId != null">permission_id</if>
+			</trim>
+		)
+		VALUES(
+			<trim suffix="" suffixOverrides=",">
+				<if test="id != null">#{id},</if>
+				<if test="roleId != null">#{roleId},</if>
+				<if test="permissionId != null">#{permissionId}</if>
+			</trim>
+		)
+	</insert>
+	
+	<!-- =======================有用分割线======================= -->
+
+	<select id="getRolesByMerchantId" parameterType="map" resultType="hashmap"> 		
+ 		SELECT ID as "id",NAME as "name" FROM (SELECT * FROM T_SYS_ROLE 
+ 		WHERE STATUS=#{status} <!-- AND ROLE_TYPE=#{entType} -->) A
+		WHERE A.MERCHANT_ID=#{merchantId}
+	</select>
+	
+		
+	<select id="getSystemMenus" parameterType="map" resultType="hashmap">
+		SELECT DISTINCT A.ID as "id", A.NAME as "name", A.PARENT_ID as "pid", 'true' as "isParent" 
+    	FROM T_SYS_MENU A 
+    	JOIN T_SYS_ROLE_MENU B on(A.ID=B.MENU_ID) 
+    	JOIN T_SYS_ROLE C ON(C.ID=B.ROLE_ID) 
+  		UNION ALL
+    	SELECT DISTINCT A.ID as "id", A.name as "name", A.MENU_ID as "pid",'false' as "isParent" 
+    	FROM T_SYS_PERMISSION A 
+    	JOIN T_SYS_ROLE_PERMISSION B on(A.ID=B.PERMISSION_ID)
+    	JOIN T_SYS_ROLE C ON(C.ID=B.ROLE_ID) 
+	</select>
+	
+	<!-- 根据登录用户ID获取该用户可操作权限 -->
+	<select id="getAllMenuPermission" resultType="hashmap">
+		SELECT ID as "id", NAME as "name", PARENT_ID as "pid", 'true' as "isParent",ORDER_NO  
+		FROM T_SYS_MENU WHERE STATUS='ON'
+		UNION ALL
+		SELECT a.ID as "id", a.NAME as "name", a.MENU_ID as "pid",'false' as "isParent",b.ORDER_NO 
+		FROM T_SYS_PERMISSION a JOIN (SELECT * FROM T_SYS_MENU WHERE STATUS='ON') b ON(a.MENU_ID=b.ID)
+		ORDER BY ORDER_NO
+    	
+	</select>
+	
+	<select id="getSystemRoles" resultType="role">
+		SELECT <include refid="selectColumns" />
+		from T_SYS_ROLE A 
+	</select>
+	
+	<select id="search" parameterType="pagerEntity" resultType="role"> 
+		SELECT
+		<include refid="selectColumns" />
+		FROM T_SYS_ROLE A 
+		LEFT JOIN T_SYS_USER B ON A.creator=B.CODE 
+		LEFT JOIN T_SYS_REGION Y ON B.REGION_ID=Y.ID 
+		<include refid="searchWhere" /> 
+		ORDER BY A.CREATE_DT DESC
+		limit #{offset}, #{pageSize}
+	</select>
+
+	<select id="count" parameterType="pagerEntity"
+		resultType="long">
+		SELECT count(*) FROM T_SYS_ROLE A 
+		LEFT JOIN T_SYS_USER B ON A.creator=B.CODE 
+		LEFT JOIN T_SYS_REGION Y ON B.REGION_ID=Y.ID 
+		<include refid="searchWhere" />
+	</select>
+
+	<select id="countRecords" resultType="int">
+		SELECT count(*) FROM T_SYS_ROLE WHERE STATUS!='DEL'
+	</select>
+	
+	<select id="isSystemRole" parameterType="string" resultType="int">
+		SELECT count(*) FROM T_SYS_ROLE WHERE STATUS!='DEL' and ID=#{id} 
+	</select>
+	
+	<select id="view" parameterType="string" resultType="role">
+		 SELECT A.ID,A.NAME, A.REMARK, A.creator, 
+		A.CREATE_DT as createDt FROM T_SYS_ROLE A WHERE A.ID=#{id} 
+	</select>
+	
+	<select id="getRolesByUserType" parameterType="string" resultType="hashmap">
+		SELECT A.ID as "id",A.NAME as "name" FROM T_SYS_ROLE A
+	 		WHERE A.STATUS='ON' 
+	</select>
+	
+	
+	<select id="getRolesByRegionCode" parameterType="string" resultType="hashmap">
+		SELECT A.ID as "id",A.NAME as "name" 
+		FROM T_SYS_ROLE A 
+		LEFT JOIN T_SYS_USER B ON A.creator=B.CODE 
+		LEFT JOIN T_SYS_REGION Y ON B.REGION_ID=Y.ID 
+		WHERE A.STATUS='ON' 
+			AND Y.CODE LIKE CONCAT(#{regionCode},'%')
+	</select>
+	
+	<!-- 查询是否存在相同名称的角色 -->
+	<select id="countName" parameterType="string" resultType="int">
+		SELECT count(1) FROM T_SYS_ROLE where NAME=#{name}
+	</select>
+	
+	
+</mapper>

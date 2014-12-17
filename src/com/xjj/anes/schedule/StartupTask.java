@@ -15,7 +15,7 @@ public class StartupTask implements Runnable{
 		//SysService sysService = CoreApplicationContext.getApplicationContext().getBean(SysService.class);
 		if (sysService.txScanAnnotations())
 		{
-			//sysService.txAutoCreateDefaultSuperAdmin();
+			sysService.txCreateDefaultAccount();
 		}
 
 		//putDataToCache();

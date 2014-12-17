@@ -1,0 +1,69 @@
+package com.xjj.anes.entity.sys;
+
+import java.util.Date;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.xjj.anes.serializer.DateTimeSerializer;
+
+public class User extends CoreEntity {
+	private String code;
+	private String password;
+	private String name;
+	private String status;
+	private String userType;
+	private String roleId;
+	private String remark;
+	private Date unlockDt;
+	
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getUserType() {
+		return userType;
+	}
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+	public String getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
+	}
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	@JsonSerialize(using = DateTimeSerializer.class)
+	public Date getUnlockDt() {
+		return unlockDt;
+	}
+	public void setUnlockDt(Date unlockDt) {
+		this.unlockDt = unlockDt;
+	}
+
+	
+}
