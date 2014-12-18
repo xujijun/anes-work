@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+	   default-lazy-init="false" 
+	   default-autowire="byName"> 
+
+<!-- Local cache --> 
+<bean id="cache" class="com.xyt.cgqm.cache.impl.LocalCacheImpl" init-method="init">
+	<property name="firstKeyIsForceMd5" value="true"/>
+	<property name="autoScanSeconds" value="180"/>
+</bean> 
+
+<!-- Memcached 
+<bean id="memcachedConfig" class="com.xyt.cgqm.cache.MemcachedConfig">
+	<property name="servers">
+		<list>
+			<value>172.16.100.182:12000</value>
+		</list>
+	</property>
+	<property name="weights">
+		<list>
+			<value>1</value>
+		</list>
+	</property>
+	<property name="failback" value="true"/>
+	<property name="failover" value="true"/>
+	<property name="nagle" value="false"/>
+	<property name="aliveCheck" value="true"/>
+	<property name="initConn" value="10"/>
+	<property name="minConn" value="3"/>
+	<property name="maxConn" value="1024"/>
+	<property name="maxIdle" value="3000"/>
+	<property name="maintSleep" value="30"/>
+	<property name="socketTO" value="10000"/>
+</bean>
+<bean id="cache" class="com.xyt.cgqm.cache.impl.MemcachedCacheImpl" init-method="init">
+	<property name="firstKeyIsForceMd5" value="true"/>
+	<property name="memcachedConfig" ref="memcachedConfig"/>
+</bean>
+-->
+</beans>
