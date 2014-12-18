@@ -7,8 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,12 +23,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.xjj.anes.annotation.PermissionChecking;
 import com.xjj.anes.annotation.SysMenu;
+import com.xjj.anes.bean.common.LoginUser;
+import com.xjj.anes.bean.common.ResultBean;
+import com.xjj.anes.cache.CacheConstants;
 import com.xjj.anes.constants.CommonConstants;
 import com.xjj.anes.constants.SysConstants;
-import com.xjj.anes.dao.sys.MenuMapper;
-import com.xjj.anes.dao.sys.PermissionMapper;
-import com.xjj.anes.dao.sys.RoleMapper;
-import com.xjj.anes.dao.sys.UserMapper;
+import com.xjj.anes.dao.sys.MenuDao;
+import com.xjj.anes.dao.sys.PermissionDao;
+import com.xjj.anes.dao.sys.RoleDao;
+import com.xjj.anes.dao.sys.UserDao;
 import com.xjj.anes.entity.sys.Menu;
 import com.xjj.anes.entity.sys.Permission;
 import com.xjj.anes.entity.sys.Role;
@@ -42,13 +48,68 @@ public class SysServiceImpl implements SysService {
 	private Log log = LogFactory.getLog(this.getClass().getName());
 	
 	@Resource
-	private MenuMapper menuMapper;
+	private MenuDao menuDao;
 	@Resource
-	private PermissionMapper permissionMapper;
+	private PermissionDao permissionDao;
 	@Resource
-	private RoleMapper roleMapper;
+	private RoleDao roleDao;
 	@Resource
-	private UserMapper userMapper;
+	private UserDao userDao;
+	
+
+	@Override
+	public ResultBean txLogin(HttpServletRequest request,
+			HttpServletResponse response, String code, String password,
+			String client, String verificationCode, boolean rememberMe) {
+		
+		ResultBean rb = new ResultBean();
+		
+		if (StringUtils.isEmpty(code) || StringUtils.isEmpty(password))	{
+			rb.setSuccess(false);
+			rb.setMessage("用户名或密码不能为空。");
+			return rb;
+		}
+		
+		
+		User user = userDao.getUserByCode(code);
+		if (user == null) {
+			rb.setSuccess(false);
+			rb.setMessage("用户名不正确或用户处于暂停状态。");
+			return rb;
+		}
+		
+		if (user.getUnlockDt() != null)	{
+			rb.setSuccess(false);
+			rb.setMessage("用户处于锁定状态，请稍后再试。");
+			return rb;
+		}
+		
+		if (!password.equals(user.getPassword())) {
+			rb.setSuccess(false);
+			rb.setMessage("密码不正确。");
+		}
+		
+		//拼装LoginUser
+		String sessionId = AuthxUtil.encryptByMd5(UUID.randomUUID() + request.getSession().getId());
+		LoginUser loginUser = new LoginUser();
+		loginUser.setId(user.getId());
+		loginUser.setCode(code);
+		loginUser.setName(user.getName());
+		loginUser.setLoginDt(new Date());
+		loginUser.setMaxInactiveInterval(request.getSession().getMaxInactiveInterval());
+		loginUser.setSessionId(sessionId);
+		loginUser.setToken(CacheConstants.DefaultSessionIdName + "=" + sessionId);
+		loginUser.setClient(client);
+		
+		user.setPermissionIdSet(userDao.getUserPermissionIds(loginUser.getId()));
+		user.setMenuList(menuDao.getMenusByUser(loginUser.getId()));
+		loginUser.setUser(user);
+		
+		//TODO cacheSessionService.txLogin(loginUser.getSessionId(), loginUser);
+		
+		rb.setData(loginUser);
+		return rb;
+	}
 	
 	@Override
 	public boolean txScanAnnotations() {
@@ -59,7 +120,7 @@ public class SysServiceImpl implements SysService {
 		Set<Class<?>> allClses = null;
 		
 		Map<String, Menu> menuMap = new HashMap<String, Menu>();
-		List<Menu> menuList = (List<Menu>) menuMapper.listAll();
+		List<Menu> menuList = (List<Menu>) menuDao.listAll();
 		Set<String> menuIdSet = new HashSet<String>();
 		
 		for (Menu m : menuList)	{
@@ -77,7 +138,7 @@ public class SysServiceImpl implements SysService {
 		Permission permission = null;
 		Method[] methods = null;
 		Map<String, Permission> permissionMap = new HashMap<String, Permission>();
-		List<Permission> permissionList = permissionMapper.listAll();
+		List<Permission> permissionList = permissionDao.listAll();
 		for (Permission p : permissionList)	{
 			permissionMap.put(p.getId(), p);
 		}
@@ -127,11 +188,11 @@ public class SysServiceImpl implements SysService {
 				//menu = menuMap.get(menuId);
 				menu.setUpdater(userName);
 				menu.setUpdateDt(dtNow);
-				menuMapper.update(menu);
+				menuDao.update(menu);
 			} else{ //Menu表不存在该Menu ID，则添加到Menu表中
 				menu.setCreator(userName);
 				menu.setCreateDt(dtNow);
-				menuMapper.insert(menu);
+				menuDao.insert(menu);
 			}
 			menuMap.put(menu.getId(), menu);
 			menuIdSet.add(menuId);
@@ -165,7 +226,7 @@ public class SysServiceImpl implements SysService {
 					permission.setName(permissionChecking.name());
 					permission.setCls(cls.getName());
 					permission.setMethod(method.getName());
-					permissionMapper.update(permission);
+					permissionDao.update(permission);
 				} else {
 					permission = new Permission();
 					permission.setId(permissionChecking.id());
@@ -173,7 +234,7 @@ public class SysServiceImpl implements SysService {
 					permission.setName(permissionChecking.name());
 					permission.setCls(cls.getName());
 					permission.setMethod(method.getName());
-					permissionMapper.insert(permission);
+					permissionDao.insert(permission);
 				}
 				permissionMap.put(permission.getId(), permission);
 				permissionIdSet.add(permission.getId());
@@ -184,17 +245,18 @@ public class SysServiceImpl implements SysService {
 		for (String id : menuMap.keySet()) {
 			if (!menuIdSet.contains(id)) {
 				log.info("Delete Menu[" + id + "] " + menuMap.get(id));
-				menuMapper.deleteMenuAndRel(id);
+				menuDao.deleteMenuAndRel(id);
 			}
 		}
 		
 		for(String id : permissionMap.keySet()){
 			if(!permissionIdSet.contains(id)){
 				log.info("Delete Permission[" + id + "] " + permissionMap.get(id));
-				permissionMapper.deletePermissionAndRel(id);
+				permissionDao.deletePermissionAndRel(id);
 			}
 		}
 		
+		log.info("Menus and Permissions scanned.");
 		return result;
 	}
 
@@ -205,14 +267,14 @@ public class SysServiceImpl implements SysService {
 		
 		//获取所有Menu
 		Set<String> menuIdSet = new HashSet<String>();
-		List<Menu> menuList = (List<Menu>) menuMapper.listAll();
+		List<Menu> menuList = (List<Menu>) menuDao.listAll();
 		for (Menu m : menuList)	{
 			menuIdSet.add(m.getId());
 		}
 		
 		//获取所有Permission
 		Set<String> permissionIdSet = new HashSet<String>();
-		List<Permission> permissionList = permissionMapper.listAll();
+		List<Permission> permissionList = permissionDao.listAll();
 		for (Permission p : permissionList)	{
 			permissionIdSet.add(p.getId());
 		}
@@ -222,9 +284,9 @@ public class SysServiceImpl implements SysService {
 		Set<String> assignedPermissionId = null; //上次已经分配给superAdmin的PermissionIds
 		
 		//超级管理员角色是否已经存在
-		if(roleMapper.exists(SysConstants.DefaultRole.superAdmin) >0 ){
-			assignedMenuIds = roleMapper.selectMenuIdsByRoleId(roleId);
-			assignedPermissionId = roleMapper.selectPermissionIdsByRoleId(roleId);
+		if(roleDao.exists(SysConstants.DefaultRole.superAdmin) >0 ){
+			assignedMenuIds = roleDao.selectMenuIdsByRoleId(roleId);
+			assignedPermissionId = roleDao.selectPermissionIdsByRoleId(roleId);
 		}else {
 			Map<String, String> defaultRoleMap = SysConstants.getDefaultRoleMap();
 			for (String id : defaultRoleMap.keySet()){ //创建系统缺省角色
@@ -234,33 +296,33 @@ public class SysServiceImpl implements SysService {
 				role.setStatus(CommonConstants.Status.ACTIVE);
 				role.setCreator(creator);
 				role.setCreateDt(dtNow);
-				roleMapper.insert(role);
+				roleDao.insert(role);
 			}
 		}
 		
 		RoleMenu rm = null;
 		for(String menuId : menuIdSet){
-			if(assignedMenuIds!=null && !assignedMenuIds.contains(menuId)){ //如果该Menu还没被分配给superAdmin
+			if(assignedMenuIds==null || !assignedMenuIds.contains(menuId)){ //如果该Menu还没被分配给superAdmin
 				rm = new RoleMenu();
 				rm.setId(MyUtil.generateUUID());
 				rm.setRoleId(roleId);
 				rm.setMenuId(menuId);
-				roleMapper.insertRoleMenu(rm);
+				roleDao.insertRoleMenu(rm);
 			}
 		}
 		
 		RolePermission rp = null;
 		for(String permissionId : permissionIdSet){
-			if(assignedPermissionId!=null && !assignedPermissionId.contains(permissionId)){
+			if(assignedPermissionId==null || !assignedPermissionId.contains(permissionId)){
 				rp = new RolePermission();
 				rp.setId(MyUtil.generateUUID());
 				rp.setRoleId(roleId);
 				rp.setPermissionId(permissionId);
-				roleMapper.insertRolePermission(rp);
+				roleDao.insertRolePermission(rp);
 			}
 		}
 		
-		if(userMapper.equals(SysConstants.ADMINISTRATOR)){
+		if(userDao.exists(SysConstants.ADMINISTRATOR)<1){
 			// 创建超级管理员用户
 			User user = new User();
 			user.setId(SysConstants.ADMINISTRATOR);
@@ -273,9 +335,10 @@ public class SysServiceImpl implements SysService {
 			user.setRemark("系统自动创建");
 			user.setCreator(creator);
 			user.setCreateDt(dtNow);
-			userMapper.insert(user);
+			userDao.insert(user);
 		}
-
+		log.info("Default roles and accounts created.");
 	}
+
 
 }

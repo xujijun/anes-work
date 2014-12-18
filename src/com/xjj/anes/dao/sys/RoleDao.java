@@ -8,7 +8,7 @@ import com.xjj.anes.entity.sys.Role;
 import com.xjj.anes.entity.sys.RoleMenu;
 import com.xjj.anes.entity.sys.RolePermission;
 
-public interface RoleMapper {
+public interface RoleDao {
 	public Role select(@Param("id") String id);
 	
 	public int insert(Role entity);

@@ -5,14 +5,14 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.xjj.anes.bean.common.ResultBean;
-import com.xjj.anes.dao.sys.MenuMapper;
+import com.xjj.anes.dao.sys.MenuDao;
 import com.xjj.anes.entity.sys.Menu;
 import com.xjj.anes.service.sys.MenuService;
 
 @Service
 public class MenuServiceImpl implements MenuService {
 	@Resource
-	private MenuMapper menuMapper;
+	private MenuDao menuMapper;
 
 	@Override
 	public ResultBean listAll() {

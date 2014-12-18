@@ -34,5 +34,12 @@ public class UserController extends SysBaseController {
 	//public ResultBean search(HttpServletRequest request, Pager<User> pager, UserVo userVo){
 		return null;
 	}
+	
+	@RequestMapping(value = "add")
+	@PermissionChecking(id = MenuConstants.Sys.SYS_USER + "-add", name = "新增")
+	public ResultBean add(){
+	//public ResultBean search(HttpServletRequest request, Pager<User> pager, UserVo userVo){
+		return null;
+	}
 	//TODO Other methods
 }

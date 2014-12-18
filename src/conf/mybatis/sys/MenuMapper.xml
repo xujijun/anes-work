@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xjj.anes.dao.sys.MenuMapper">
+<mapper namespace="com.xjj.anes.dao.sys.MenuDao">
 
 	<sql id="selectColumns">
 		A.ID AS id,
@@ -97,6 +97,14 @@
         SELECT
         <include refid="selectColumns" /> 
         FROM T_SYS_MENU A  
+	</select>
+	
+	<!-- 根据用户ID得到树形菜单 -->
+	<select id="getMenusByUser" resultType="menu">
+		SELECT M.* FROM t_sys_menu M
+		WHERE M.id IN
+		(SELECT RM.menu_id FROM t_sys_role_menu RM, t_sys_user U 
+		WHERE U.id=#{userId} AND RM.role_id=U.role_id)
 	</select>
 	
 	<!-- =======================有用分割线======================= -->

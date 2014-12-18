@@ -1,6 +1,10 @@
 package com.xjj.anes.entity.sys;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.xjj.anes.serializer.DateTimeSerializer;
@@ -14,6 +18,9 @@ public class User extends CoreEntity {
 	private String roleId;
 	private String remark;
 	private Date unlockDt;
+	
+	private List<Menu> menuList = new ArrayList<Menu>();
+	private Set<String> permissionIdSet = new HashSet<String>();
 	
 	public String getCode() {
 		return code;
@@ -63,6 +70,18 @@ public class User extends CoreEntity {
 	}
 	public void setUnlockDt(Date unlockDt) {
 		this.unlockDt = unlockDt;
+	}
+	public List<Menu> getMenuList() {
+		return menuList;
+	}
+	public void setMenuList(List<Menu> menuList) {
+		this.menuList = menuList;
+	}
+	public Set<String> getPermissionIdSet() {
+		return permissionIdSet;
+	}
+	public void setPermissionIdSet(Set<String> permissionIdSet) {
+		this.permissionIdSet = permissionIdSet;
 	}
 
 	

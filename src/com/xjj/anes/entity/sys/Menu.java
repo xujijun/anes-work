@@ -1,5 +1,7 @@
 package com.xjj.anes.entity.sys;
 
+import org.springframework.util.StringUtils;
+
 
 /**
  * 菜单表
@@ -16,6 +18,11 @@ public class Menu extends CoreEntity {
 	private String status;
 	/** 备注 **/
 	private String remark;
+	
+	//如果ParentId为空，则是父菜单
+	public boolean getParent(){
+		return StringUtils.isEmpty(parentId) ? true : false; 
+	}
 	
 	public String getName() {
 		return name;

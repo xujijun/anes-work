@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.xjj.anes.entity.sys.Permission;
 
-public interface PermissionMapper {
+public interface PermissionDao {
 	public List<Permission> listAll();
 	
 	public int insert(Permission entity);
