@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.xjj.anes.bean.common.LoginUser;
 import com.xjj.anes.cache.CacheConstants;
-import com.xjj.anes.cache.ICache;
+import com.xjj.anes.cache.CacheManager;
 import com.xjj.anes.cache.session.CacheHttpSession.CacheSessionHeader;
 import com.xjj.anes.service.common.CacheSessionService;
 import com.xjj.anes.service.common.SessionService;
@@ -15,8 +15,8 @@ import com.xjj.anes.service.common.SessionService;
 public class CacheSessionServiceImpl implements CacheSessionService {
 	//private Log log = LogFactory.getLog(this.getClass().getName());
 
-	@Resource
-	private ICache cache;
+	//@Resource
+	//private ICache cache;
 	@Resource
 	private SessionService sessionService;
 	
@@ -28,11 +28,13 @@ public class CacheSessionServiceImpl implements CacheSessionService {
 		cacheSessionHeader.setLastAccessTime(System.currentTimeMillis());
 		cacheSessionHeader.setExpireDt(loginUser.getMaxInactiveInterval() * 1000 + cacheSessionHeader.getLastAccessTime());
 		
-		if (cache.isAvailable()) {
-			synchronized (cache) {
+		if (CacheManager.getInstance().isAvailable()) {
+			/*synchronized (cache) {
 				cache.put(CacheConstants.UserSessionHeaderPrefix + sessionId, cacheSessionHeader);
 				cache.put(CacheConstants.LoginUser + sessionId, loginUser);
-			}
+			}*/
+			CacheManager.getInstance().put(CacheConstants.UserSessionHeaderPrefix + sessionId, cacheSessionHeader);
+			CacheManager.getInstance().put(CacheConstants.LoginUser + sessionId, loginUser);
 		} else {
 			return false;
 		}
@@ -41,7 +43,7 @@ public class CacheSessionServiceImpl implements CacheSessionService {
 
 	@Override
 	public boolean txLogout(String sessionId) {
-		if (cache.isAvailable()) {
+		if (CacheManager.getInstance().isAvailable()) {
 			deleteCacheSession(sessionId);
 			return true;
 		}
@@ -50,28 +52,30 @@ public class CacheSessionServiceImpl implements CacheSessionService {
 
 	@Override
 	public LoginUser getLoginUser(String sessionId) {
-		if (cache.isAvailable() && isLogin(sessionId)) {
-			return (LoginUser) cache.get(CacheConstants.LoginUser + sessionId);
+		if (CacheManager.getInstance().isAvailable() && isLogin(sessionId)) {
+			return (LoginUser) CacheManager.getInstance().get(CacheConstants.LoginUser + sessionId);
 		}
 		return null;
 	}
 
 	@Override
 	public boolean deleteCacheSession(String sessionId) {
-		if (!cache.isAvailable()) {
+		if (!CacheManager.getInstance().isAvailable()) {
 			return false;
 		}
-		synchronized (cache){
+		/*synchronized (cache){
 			cache.delete(CacheConstants.UserSessionHeaderPrefix + sessionId);
 			cache.delete(CacheConstants.LoginUser + sessionId);
-		}
+		}*/
+		CacheManager.getInstance().delete(CacheConstants.UserSessionHeaderPrefix + sessionId);
+		CacheManager.getInstance().delete(CacheConstants.LoginUser + sessionId);
 		return true;
 	}
 
 	@Override
 	public boolean isLogin(String sessionId) {
 		boolean result = false;
-		if (cache.isAvailable()) {
+		if (CacheManager.getInstance().isAvailable()) {
 			CacheSessionHeader csHeader = getCacheSessionHeader(sessionId);
 			if (csHeader != null && csHeader.isAvalable()) {
 				result = true;
@@ -84,6 +88,6 @@ public class CacheSessionServiceImpl implements CacheSessionService {
 
 	@Override
 	public CacheSessionHeader getCacheSessionHeader(String sessionId) {
-		return (CacheSessionHeader) cache.get(CacheConstants.UserSessionHeaderPrefix + sessionId);
+		return (CacheSessionHeader) CacheManager.getInstance().get(CacheConstants.UserSessionHeaderPrefix + sessionId);
 	}
 }

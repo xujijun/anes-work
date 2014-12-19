@@ -15,4 +15,6 @@
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
 	
+	<bean id="applicationContext" class="com.xjj.anes.service.common.CoreApplicationContext"/>
+	
 </beans>

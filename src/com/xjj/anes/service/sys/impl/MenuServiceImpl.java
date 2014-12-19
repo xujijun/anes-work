@@ -12,19 +12,19 @@ import com.xjj.anes.service.sys.MenuService;
 @Service
 public class MenuServiceImpl implements MenuService {
 	@Resource
-	private MenuDao menuMapper;
+	private MenuDao menuDao;
 
 	@Override
 	public ResultBean listAll() {
 		ResultBean rb = new ResultBean();
-		rb.setData(menuMapper.listAll());
+		rb.setData(menuDao.listAll());
 		return rb;
 	}
 
 	@Override
 	public ResultBean insert(Menu menu) {
 		ResultBean rb = new ResultBean();
-		int i = menuMapper.insert(menu);
+		int i = menuDao.insert(menu);
 		if (i <= 0)
 		{
 			rb.setSuccess(false);
@@ -39,7 +39,7 @@ public class MenuServiceImpl implements MenuService {
 	public ResultBean update(Menu entity)
 	{
 		ResultBean rb = new ResultBean();
-		int i = menuMapper.update(entity);
+		int i = menuDao.update(entity);
 		if (i <= 0)
 		{
 			rb.setSuccess(false);
@@ -53,7 +53,7 @@ public class MenuServiceImpl implements MenuService {
 	@Override
 	public ResultBean deleteMenuAndRel(String id) {
 		ResultBean rb = new ResultBean();
-		int i = menuMapper.deleteMenuAndRel(id);
+		int i = menuDao.deleteMenuAndRel(id);
 		if (i <= 0)
 		{
 			rb.setSuccess(false);

@@ -32,5 +32,21 @@
 	<!-- 默认的注解映射的支持，org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping -->
 	<mvc:annotation-driven />
 	
+	<!-- Spring MVC 拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- 系统拦截器 -->
+			<mvc:mapping path="/**" />
+			<bean class="com.xjj.anes.mvc.interceptor.ControllerInterceptor">
+				<!-- 拦截例外-->
+				<property name="notCheckURISet">
+					<list>   
+					    <value>/views/</value>
+					    <value>/data/</value>
+					</list>
+				</property> 
+			</bean>			
+		</mvc:interceptor>	
+	</mvc:interceptors>
 
 </beans>
