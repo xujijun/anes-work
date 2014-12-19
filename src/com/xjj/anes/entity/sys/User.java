@@ -12,6 +12,7 @@ import com.xjj.anes.serializer.DateTimeSerializer;
 public class User extends CoreEntity {
 	private String code;
 	private String password;
+	private String newPassword;
 	private String name;
 	private String status;
 	private String userType;
@@ -82,6 +83,12 @@ public class User extends CoreEntity {
 	}
 	public void setPermissionIdSet(Set<String> permissionIdSet) {
 		this.permissionIdSet = permissionIdSet;
+	}
+	public String getNewPassword() {
+		return newPassword;
+	}
+	public void setNewPassword(String newPassword) {
+		this.newPassword = newPassword;
 	}
 
 	

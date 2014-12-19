@@ -10,6 +10,7 @@ import com.xjj.anes.annotation.SysMenu;
 import com.xjj.anes.bean.common.ResultBean;
 import com.xjj.anes.constants.CommonConstants;
 import com.xjj.anes.constants.MenuConstants;
+import com.xjj.anes.entity.sys.User;
 
 @RestController
 @RequestMapping(value = CommonConstants.UriPrefix.API + MenuConstants.SYS + "/user/")
@@ -39,6 +40,14 @@ public class UserController extends SysBaseController {
 	public ResultBean add(){
 	//public ResultBean search(HttpServletRequest request, Pager<User> pager, UserVo userVo){
 		return null;
+	}
+	
+	//修改密码
+	@RequestMapping(value = "modifypwd")
+	public ResultBean modifypwd(HttpServletRequest request, User user)
+	{
+		user.setId(getLoginUser(request).getUser().getId());
+		return null;//TODO userService.modifypwd(user);
 	}
 	//TODO Other methods
 }
