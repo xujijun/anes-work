@@ -1,0 +1,123 @@
+/*
+ | --------------------------------------------------------
+ | File        : page.form.css
+ | Project     : Html
+ | Version     : 1.1 |
+ | Description : Public form stylesheet.
+ | Author      : Liu FuChang
+ | Author URL  : 
+ | Plugin URL  : 
+ | Copyright (C) 2013-2014  Liu FuChang
+ | --------------------------------------------------------
+ */
+
+.form-blog { padding: 21px 0px 0px 25px; font-size: 1em; }
+.row { padding-bottom: 11px; position: relative; text-align: left; }
+.middleinput { width: 195px; height: 23px;line-height:23px; border: 1px solid #B1C0C7; }
+.labeltext { float: left; width: 91px; line-height: 23px; padding-right: 10px; text-align: left; }
+.middleradio { height: 23px; }
+.middletextarea { width: 192px; border: 1px solid #B1C0C7; }
+.textarea-tip { color: #C4C4C4; font-size: 12px; /* padding-left: 120px; */ }
+.form-save { padding-left: 120px; text-align: left; }
+.back { text-decoration: underline; color: #14402F; }
+.but { overflow: hidden; _zoom: 1px; }
+    .but button { border: 0px; background: none;outline:none; }
+
+.but-left { float: left; width: 6px; height: 30px; background: url(../images/news-img/but-left-bg.jpg) no-repeat; }
+.but-center { float: left; padding: 0px 10px; height: 30px; line-height: 30px; color: white; font-weight: bold; background: url(../images/news-img/but-center-bg.jpg) repeat-x; cursor:pointer;}
+.but-right { float: left; width: 6px; height: 30px; background: url(../images/news-img/but-right-bg.jpg) no-repeat; }
+
+/**roles**/
+.roles-panel { border: 1px solid #000000; background: #f9f9f9; width: 250px; padding: 25px; }
+    .roles-panel #roles div { height: 31px; }
+/**END roles**/
+
+
+/****/
+
+.m-layout-east { width: 1000px; min-height: 500px; }
+    .m-layout-east .breadnav { padding: 10px 0px; }
+.m-layout-east input { _position: relative; _top: 15px; }
+   .m-layout-east input.shang { *position: relative; *top: 15px; }
+   .m-layout-east input.ieseven { *position: relative; *top: 18px; }
+   .m-layout-east  input.ieseven2 { *position: relative; *top: 0px; }
+#right { float: none; }
+.m-layout-east .breadnav a:link, .m-layout-east .breadnav a:visited { color: black; font-size: 12px; font-weight: bold; font-family: "宋体"; }
+.m-layout-east .middle-main { width: 100%;  overflow: hidden; }
+    .m-layout-east .middle-main .main-top { width: 100%; height: 64px; border: 0px; }
+        .m-layout-east .middle-main .main-top .but1 { float: left; width: 126px; height: 35px; border: 0px; background: url(../images/jingling.png) no-repeat 0px 0px; margin-right: 30px; cursor: pointer; }
+        .m-layout-east .middle-main .main-top .but2 { float: left; width: 126px; height: 35px; border: 0px; background: url(../images/jingling.png) no-repeat 0px -36px; margin-right: 30px; cursor: pointer; }
+        .m-layout-east .middle-main .main-top .but3 { float: left; width: 82px; border: 0px; height: 36px; background: url(../images/jingling.png) no-repeat 0px -72px; cursor: pointer; }
+        .m-layout-east .middle-main .main-top .but { float: left; width: 94px; height: 36px; background: url(../images/jingling.png) no-repeat 0px -369px; cursor: pointer; }
+    .m-layout-east .middle-main .main-center { background-color: #FFFFFF; overflow: hidden; _zoom: 1; border: 1px solid #EEE5DC; }
+        .m-layout-east .middle-main .main-center .main-left { float: left; width: 200px; }
+    .m-layout-east .middle-main .main-center-bg { background:url(../images/public/roles-left-bg.gif) repeat-y left; }
+            .m-layout-east .middle-main .main-center .main-left .sort { padding: 12px 0 0 20px; line-height: 25px; }
+                .m-layout-east .middle-main .main-center .main-left .sort .sort-hd { padding-left: 16px; background: url(../images/jingling.png) no-repeat 0px -120px; }
+            .m-layout-east .middle-main .main-center .main-left .sort2 .sort-hd { background-position: 0px -142px; }
+            .m-layout-east .middle-main .main-center .main-left .sort ul { list-style: none; }
+                .m-layout-east .middle-main .main-center .main-left .sort ul li { padding-left: 30px; }
+                    .m-layout-east .middle-main .main-center .main-left .sort ul li a:link, .m-layout-east .middle-main .main-center .main-left .sort ul li a:visited { text-decoration: none; color: black; }
+        .m-layout-east .middle-main .main-center .main-right { float: left; width: 684px; border-left: 1px solid #EEE5DC; padding-left: 48px; padding-bottom: 15px; overflow: hidden; _zoom: 1; }
+            .m-layout-east .middle-main .main-center .main-right form { margin-top:25px;}
+            .m-layout-east .middle-main .main-center .main-right .list-div { line-height: 46px; overflow: hidden; color: gray; overflow: hidden; _zoom: 1; }
+            .m-layout-east .middle-main .main-center .main-right .list-div span select{padding:6px 0;}
+            .m-layout-east .middle-main .main-center .main-right .savebut { padding-left: 100px; padding-bottom: 100px; }
+            .m-layout-east .middle-main .main-center .main-right div span { display: block; float: left; }
+                .m-layout-east .middle-main .main-center .main-right div span.text { width: 68px; text-align: right; padding-right: 15px; }
+                .m-layout-east .middle-main .main-center .main-right div span.neirong{
+                    color: black;
+                    width: 500px;
+                }
+                .m-layout-east .middle-main .main-center .main-right div span.xing { background: url(../images/jingling.png) no-repeat -2px -411px; }
+            .m-layout-east .middle-main .main-center .main-right div .save { background: url(../images/jingling.png) no-repeat 0px -250px; width: 80px; border: 0px; height: 30px; cursor: pointer; }
+            .m-layout-east .middle-main .main-center .main-right div span.pic { width: 108px; height: 120px; margin-right: 30px; padding-top: 10px; }
+            .m-layout-east .middle-main .main-center .main-right div.menunum span input { width: 102px; height: 25px; background: url(../images/jingling2.png) no-repeat -2px -2px; }
+            .m-layout-east .middle-main .main-center .main-right div.menu { padding-left: 82px; padding-bottom: 20px; }
+            .m-layout-east .middle-main .main-center .main-right div span.menupic { border: 1px solid rgb(199, 195, 195); padding: 5px; height: 88px; width: 118px; }
+            .m-layout-east .middle-main .main-center .main-right div span.wenzi { padding-top: 87px; }
+            .m-layout-east .middle-main .main-center .main-right div span.cur { position: relative; }
+                .m-layout-east .middle-main .main-center .main-right div span.cur a { position: absolute; top: 8px; right: -8px; display: block; width: 18px; height: 18px; background: url(../images/jingling.png) no-repeat 0px -299px; }
+                .m-layout-east .middle-main .main-center .main-right div span.cur img { border: 4px solid #C5C1C0; }
+            .m-layout-east .middle-main .main-center .main-right div span.input { }
+            .m-layout-east .middle-main .main-center .main-right div span textarea { width: 469px; height: 108px; background: url(../images/areabg.jpg) no-repeat; border: 0; }
+            .m-layout-east .middle-main .main-center .main-right div span.fuxuan input { width: 13px; height: 13px; background: url(../images/jingling2.png) no-repeat -3px -36px; }
+            .m-layout-east .middle-main .main-center .main-right div span input { width: 197px; height: 25px; color:black; background: url(../images/jingling.png) no-repeat 0 -171px; border: 0;margin-top:10px; line-height:22px;}
+            .m-layout-east .middle-main .main-center .main-right div.upload { padding-left: 85px; }
+                .m-layout-east .middle-main .main-center .main-right div.upload span { width: 69px; height: 26px; background: url(../images/jingling.png) no-repeat 0 -329px; cursor: pointer; }
+                .m-layout-east .middle-main .main-center .main-right div.upload p { float: left; line-height: 26px; padding-left: 10px; color: gray; }
+            .m-layout-east .middle-main .main-center .main-right div span.shangji input { background-position: 0 -207px; width: 165px; height: 21px; }
+
+/*完善企业信息*/
+.alter { line-height: 30px; }
+.m-layout-east .middle-main .alter { height: 30px; padding-top: 0px; color: black; font-weight: bold; }
+i { color: red; list-style: none; }
+.m-layout-east .middle-main .main-num span.small { width: 15px; padding-right: 0px; }
+.m-layout-east .middle-main .main-num span .xiao { width: 83px; }
+.m-layout-east .middle-main .main-num span.up { padding-left: 80px; _padding-left: 5px; text-align: left; }
+    .m-layout-east .middle-main .main-num span.up .upload { color: green; text-decoration: none; }
+.m-layout-east .middle-main .main-num span.wen { text-align: left; }
+.m-layout-east .middle-main .main-num span.ding { position: relative; }
+.m-layout-east .middle-main .main-num span.shuoming { text-align: right; width: 50px; color: gray; line-height: 16px; position: absolute; top: 33px; left: 49px; }
+.back { color: green; text-decoration: underline; line-height: 49px; cursor: pointer; }
+
+
+.newBut {
+width: 80px;
+height: 30px;
+color: #ffffff;
+font-size: 12px;
+border: none;
+background: url(../images/public/but_but.png);
+cursor: pointer;
+font-weight: bold;
+} 
+width: 80px;
+height: 30px;
+color: #ffffff;
+font-size: 12px;
+border: none;
+background: url(../images/public/but_but.png);
+cursor: pointer;
+font-weight: bold;
+}

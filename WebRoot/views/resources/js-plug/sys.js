@@ -195,6 +195,60 @@ function initXytItem()
 	checkPermission();
 }
 
+//弹出框移动算法
+dialoguiDraggable= function (_dlg) {
+    var elem = _dlg.find(".modal-content");
+    var startX, startY, x, y;
+    x = 0;
+    y = 0;
+    startX = 0;
+    startY = 0;
+
+    var mousemove=null, mouseup=null;
+    elem.css({
+        position: "relative"
+    });
+    elem.find(".modal-header").css({
+        cursor: "move"
+    });
+    elem.find(".modal-header").bind("mousedown", function (event) {
+        startX = event.screenX - x;
+        startY = event.screenY - y;
+        $(document).bind("mousemove", mousemove);
+        $(document).bind("mouseup", mouseup);
+    });
+    mousemove = function (event) {
+        y = event.screenY - startY;
+        x = event.screenX - startX;
+        elem.css({
+            top: y + "px",
+            left: x + "px"
+        });
+    };
+    mouseup = function () {
+        $(document).unbind("mousemove", mousemove);
+        $(document).unbind("mouseup", mouseup);
+    };
+};
+
+function _Dialog(title, url, callback, width, callbackpram, styleClassName) {
+    var _width = width || 530;
+    var _styleClassName = styleClassName || "m-common-bg";
+	 options = {
+			 _type:'Dialog',
+             _dialogW: _width,
+             _url:url,
+             _title:title,
+             _callbackfn: callback,
+             _jquery: $, // 测试Jq 的实例传出
+             _iscallbackpram: callbackpram,
+             _classTileBgStyle: _styleClassName
+         };
+	 if(width)
+		 options._dialogW = width;
+    $(window.parent.showPrompt(options));
+}
+
 /**
  * 错误提示框，在弹出框中使用
  * @param msg
