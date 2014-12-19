@@ -14,7 +14,7 @@
 		A.creator,
 		A.CREATE_DT as createDt,
 		A.UPDATER,
-		A.UPDATE_DT as updateDt,
+		A.UPDATE_DT as updateDt
 	</sql>
 	
 	<sql id="searchColumns">
@@ -29,7 +29,7 @@
 		A.creator,
 		A.CREATE_DT as createDt,
 		A.UPDATER	,
-		A.UPDATE_DT as updateDt,
+		A.UPDATE_DT as updateDt
 	</sql>
 	
 	<!-- 插入列名 -->
@@ -47,7 +47,7 @@
 			<if test="creator != null">creator,</if>
 			<if test="createDt != null">CREATE_DT,</if>
 			<if test="updater != null">UPDATER,</if>
-			<if test="updateDt != null">UPDATE_DT,</if>	
+			<if test="updateDt != null">UPDATE_DT</if>	
 		</trim>
 	</sql>
 	<!-- 插入列值 -->
@@ -65,7 +65,7 @@
 			<if test="creator != null">#{creator},</if>
 			<if test="createDt != null">#{createDt},</if>
 			<if test="updater != null">#{updater},</if>
-			<if test="updateDt != null">#{updateDt},</if>
+			<if test="updateDt != null">#{updateDt}</if>
 		</trim>
 	</sql>
 	<sql id="updateColumns">
@@ -77,7 +77,7 @@
 			<if test="remark != null">REMARK=#{remark},</if>
 			<if test="unlockDt != null">UNLOCK_DT=#{unlockDt},</if>
 			<if test="updater != null">UPDATER=#{updater},</if>
-			<if test="updateDt != null">UPDATE_DT=#{updateDt},</if>
+			<if test="updateDt != null">UPDATE_DT=#{updateDt}</if>
 		</set>
 	</sql>
 	
@@ -108,7 +108,7 @@
 	</select>
 	
 	<select id="getUserPermissionIds" parameterType="map" resultType="string">
-		SELECT RP.* from t_sys_user U, t_sys_role R, t_sys_role_permission RP
+		SELECT RP.permission_id from t_sys_user U, t_sys_role R, t_sys_role_permission RP
 		WHERE U.id=#{userId} AND R.id=U.role_id AND RP.role_id=R.id
 	</select>	
 	<!-- =======================有用分割线======================= -->

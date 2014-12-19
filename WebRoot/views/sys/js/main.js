@@ -19,7 +19,7 @@ $(function(){
 			var menuList = resultBean.data.user.menuList;
 			$("#userNameLabel").html(resultBean.data.name);
 			$("#user_type").html("【"+resultBean.data.user.typeName+"】");
-			filter(menuList);
+			//filter(menuList);
 			buildTreeMenu(menuList);
 		}
 	},'json');

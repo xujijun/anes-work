@@ -1,0 +1,40 @@
+.xyt-select { border: none; display: block; position: relative; float: left; }
+.xyt-select span { display: block; float: left; margin: 1px 0 0 1px; line-height: 18px; }
+.xyt-select-child { border: 1px solid #ABADB3; display: block; position: relative; height: 17px; float: left; margin-top: 1px; }
+.txt { height: 15px; border: 0px; display: block; float: left; margin: 0px; width: 150px; }
+.xyt-select-child .btn { background: url(down.gif) no-repeat; width: 17px; height: 17px; border: 0px; display: block; float: left; margin: 0 !important; }
+.xyt-select-child .clear-text { background: url(del_select.gif) no-repeat; width: 17px; height: 17px; border: 0px; display: block; float: left; margin: 0 !important; }
+.xyt-select-child .clear-text:hover { background: url(del_hover.gif) no-repeat; }
+.selectDiv { position: absolute; left: -1px; top: 20px; border: 1px solid #ABADB3; min-width: 115px; max-width: 255px; max-height: 200px; display: none; font-size: 12px; overflow: auto; margin-top: -2px; z-index: 111; background: white; }
+.selectDiv ul { margin-right: 20px !important; }
+.jstree a { margin: 1px !important; padding: 0px 0px 0 0px !important; }
+.jstree-classic .jstree-hovered { border: none !important; padding: 0px 0 0 0 !important; }
+.jstree-classic .jstree-clicked { padding: 0px 0 0 0 !important; border: none !important; }
+
+.searchBox .xyt-select { border: none; float: none; display: inline-block; zoom: 1; position: relative; margin-bottom: -5px; *display: inline; *margin-bottom: -3px; }
+
+/*divCoverÕÚ¸Ç²ã*/
+.divCover { position: absolute; z-index: 100; display: none; height: 100%; width: 100%; top:0px; }
+
+.table-group .xyt-select { border: none; display: block; position: relative; top: -1px; float: left; margin-right: 10px; line-height: 34px; }
+
+.table-group .xyt-select-child { border: 1px solid #ABADB3; width: 100%; display: block; position: relative; height: 34px; float: left; }
+.table-group .xyt-select-child input { width: 85%; margin: 0px; padding: 0px; border: 0px; padding-left: 9px; }
+.table-group .xyt-select-child .btn { position: absolute; right: 0px; }
+.table-group .xyt-select-child .clear-text { position: absolute; right: 30px; }
+
+.table-group .xyt-select-child .btn { background: url(down36.gif) no-repeat; width: 25px; height: 34px; border: 0px; display: block; float: left; margin: 0 !important; background-position: -5px 0px; }
+.table-group .xyt-select-child .clear-text { background: url(del_select36.gif) no-repeat; width: 25px; height: 34px; border: 0px; display: block; float: left; margin: 0 !important; background-position: -5px 0px; }
+.table-group .xyt-select-child .clear-text:hover { background: url(del_hover36.gif) no-repeat; background-position: -5px 0px; }
+.table-group .selectDiv { top: 36px; }
+
+.m-layout-east .xyt-select { margin-bottom:20px;height: 180px;}
+.m-layout-east .xyt-select-child { border: 1px solid #ABADB3; width: 197px;display: block; position: relative; height: 25px;line-height: 25px; float: left; }
+.m-layout-east.xyt-select-child input { width: 85%; margin: 0px; padding: 0px; border: 0px; padding-left: 9px; height:100%; }
+.m-layout-east .xyt-select-child .btn { position: absolute; right: 0px; }
+.m-layout-east .xyt-select-child .clear-text { position: absolute; right: 30px; }
+
+.m-layout-east .xyt-select-child .btn { background: url(down36.gif) no-repeat; width: 25px; height: 25px; border: 0px; display: block; float: left; margin: 0 !important; background-position: -5px -3px; }
+.m-layout-east .xyt-select-child .clear-text { background: url(del_select36.gif) no-repeat; width: 25px; height: 25px; border: 0px; display: block; float: left; margin: 0 !important; background-position: -5px -5px; }
+.m-layout-east .xyt-select-child .clear-text:hover { background: url(del_hover36.gif) no-repeat; background-position: -5px -5px; }
+.m-layout-east .selectDiv {top: 29px; }

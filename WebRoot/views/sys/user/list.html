@@ -1,0 +1,250 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="../../resources/style/page.public.css" rel="stylesheet" />
+<link href="../../resources/style/page.table.css" rel="stylesheet" />
+<link href="../../resources/style/sys.css" rel="stylesheet" />
+<link href="../../resources/xyt-pager/style.css" rel="stylesheet" />
+<script src="../../resources/js-plug/jquery/jquery-1.9.1.js"></script>
+<script src="../../resources/js-plug/md5.js"></script>
+<script src="../../resources/xyt-pager/pager.js"></script>
+<script src="../../resources/js-plug/sys.js"></script>
+<!-- 树型选择器样式 -->
+<link href="../../resources/xyt-select/style.css" rel="stylesheet" />
+<!-- 树型选择器 -->
+<script src="../../resources/js-plug/jquery.jstree.js"></script>
+<script src="../../resources/xyt-select/select.js"></script>
+<style type="text/css">
+.table-group input,.table-group select {
+	color: gray;
+}
+</style>
+</head>
+<body style="overflow-y: hidden; overflow-x: hidden;">
+	<div class="divCover"></div>
+	<form id="userSearchForm">
+		<!-- BEGIN 内容区-->
+		<div class="main-big">
+			<div class="main-b-box">
+				<!-- BEGIN table组件-->
+				<div class="main-b-contentbox">
+					<div class="contentbox-title-nav">
+						<div class="navigations">
+							<ul>
+								<li><a href="#">首页</a> <span>&gt;</span></li>
+								<li><a href="#" id="systemMenuName">系统管理</a> <span>&gt;</span></li>
+								<li><a href="#">用户管理</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="contentbox-body">
+						<div class="table-query">
+							<div class="table-group query-inline-num5" permissionId="sys-user-search" >
+								<label></label> <input type="text" name="searchName" id="searchName" placeholder='用户名/姓名'
+									value="" onchange="change()" onkeydown="change()" /> <label></label> <select name="status">
+									<option value="">状态选择</option>
+									<option value="ON">正常</option>
+									<option value="OFF">停用</option>
+								
+								 </select>
+								 
+								 <!-- <select name="userTypeSearch" id="userTypeSearch">
+									<option value="">用户类型</option>
+									<option value="SYS">系统管理</option>
+									<option value="OPERATION">运营管理</option>
+									<option value="SUPPORT">支撑管理</option>
+									<option value="TELECOM">电信管理</option>
+								</select> 
+								
+								<select id="entType" style="display: none;" name="entType"
+									data="/api/sys/getDicts?clsCode=USER_TYPE" iswithblank="true" blanklabel="用户类型"></select>
+								
+								<div dialogTitle="" class="xyt-select" id="componentId" style="margin-bottom: 11px;"
+									_id='textId' hiddenFieldName="regionId" hiddenIdValue="" displayValue="选择地区" _Title='选择地区'
+									action="loadUserRegions('componentId','/api/sys/region/getRegionTreeNodes')"></div>
+								 -->
+								<button type="button" id='but-search' permissionId="sys-user-search" class="perm"
+									onclick="loadUser()">查询</button>
+								<button type="button" class="perm" id="resetButton">重置</button>
+							</div>
+						</div>
+						<div class="table-toolbar">
+							<div class="btn-group">
+								<button type="button" id="addUser" class="btn green perm" permissionId="sys-user-insert">
+									新增用户 <i class="icon-plus"></i>
+								</button>
+							</div>
+						</div>
+						<div class="table-scrollable">
+							<div class="table-wrapper">
+								<table class="table table-striped table-hover table-bordered">
+									<thead>
+										<tr>
+											<th>用户名</th>
+											<th>名称</th>
+											<th>状态</th>
+											<th>类型</th>
+											<th style="width: 220px;">地区</th>
+											<th class="operate4" style="width: 220px;">操作</th>
+										</tr>
+									</thead>
+									<tbody id="loadUserContent">
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="page-scrollable">
+							<div class="table-pages">
+								<div id="xyt-pager"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			createPager("loadUser", "xyt-pager");
+			if (window.top.getLoginUser().user.userType == 'OPT') {
+				$("#entType").show();
+			}
+			var loginUserType = window.top.getLoginUser().user.userType;
+			if (loginUserType == "OPERATION") {
+				$("#userTypeSearch option[value='SYS']").remove();
+			} else if(loginUserType != "SYS"){
+				$("#userTypeSearch").remove();
+			}
+			if (window.top.getLoginUser().userAccount === true) {
+				$("#systemMenuName").text("用户管理");
+			}
+			$("#addUser").click(function() {
+				var temp_url = getContextPath() + "/views/sys/user/add.html";
+				_Dialog('新增用户', temp_url, loadUser);
+			});
+			loadUser();
+			//placeholder();
+			//$("input").addClass("placeholder");
+			//$("select").css({"color":"black"});
+			//changesel_input_style();
+			$(".table-query input").addClass("gr_class");
+			$(".table-query input").focus(function() {
+				$(this).removeClass("gr_class");
+				$(this).css({
+					"color" : "black"
+				});
+			});
+			$(".table-query input").blur(function() {
+				if ('' == $(this).val() || $(this).val() == $(this).attr('placeholder')) {
+					$(this).removeClass("bl_class");
+					$(this).css({
+						"color" : "gray"
+					});
+				} else {
+					$(this).removeClass("gr_class");
+					$(this).css({
+						"color" : "black"
+					});
+				}
+			});
+			$("#userSearchForm").on("keyup", function(e) {
+				if (e.which == 13) {
+					loadUser();
+				}
+			});
+		});
+		var loginUserId = window.top.getLoginUser().user.id;
+		var loginUserCode = window.top.getLoginUser().user.code;
+		function loadUser() {
+			//      topLoading();
+			$('[placeholder]').focusin();
+			$.post(getContextPath() + "/api/sys/user/search", $("#userSearchForm").serialize(), function(resultBean, status, request) {
+				//         topLoaded();
+				$('[placeholder]').focusout();
+				if (!handleAjaxRequest(resultBean, status, request)) {
+					return;
+				}
+				$("#loadUserContent").html("");
+				var beanList = resultBean.data.beanList;
+				var bean = "";
+				var s = beanList.length;
+				for (var i = 0; i < s; i++) {
+					bean = beanList[i];
+					var opt = "";
+					if(loginUserId==bean.id||bean.code==loginUserCode.substring(0,loginUserCode.length-3)){
+						opt = "<a href='javascript:void(0);' class='viewUser perm' permissionId='sys-user-view' data='" + bean.id
+						+ "'>查看</a>";
+					}else{
+						opt = "<a href='javascript:void(0);' permissionId='sys-user-getUserRoles' data=" + bean.id
+						+ "  class='permission perm'>分配权限</a><a href='javascript:void(0);' class='viewUser perm' permissionId='sys-user-view' data='" + bean.id
+						+ "'>查看</a><a href='javascript:void(0);' class='editUser perm' permissionId='sys-user-update' data='" + bean.id
+						+ "'>修改</a><a href='javascript:void(0);' class='delUser perm' permissionId='sys-user-delete' data='" + bean.id + "'>删除</a>"
+						+"<a href='javascript:void(0);' class='resetPwd perm' permissionId='sys-user-resetPwd' data='" + bean.id + "'>重置密码</a>";
+					}
+					appendTrToTBody(i, "loadUserContent", new Array(bean.code, bean.name, bean.statusName, bean.typeName, bean.regionName,opt));
+				}
+
+				$(".permission").click(function() {
+					var id = $(this).attr("data");
+					var temp_url = getContextPath() + "/views/sys/user/permission.html?id=" + id;
+					_Dialog('分配权限', temp_url, loadUser);
+				});
+				$(".viewUser").click(function() {
+					var id = $(this).attr("data");
+					var temp_url = getContextPath() + "/views/sys/user/view.html?id=" + id;
+					_Dialog('查看用户信息', temp_url, loadUser);
+				});
+				$(".editUser").click(function() {
+					var id = $(this).attr("data");
+					var temp_url = getContextPath() + "/views/sys/user/edit.html?id=" + id;
+
+					_Dialog('修改用户', temp_url, loadUser);
+				});
+				$(".delUser").click(function() {
+					var id = $(this).attr("data");
+
+					_confirmDialog("亲，你确定要删除吗？", "删除温馨提示", function(e) {
+						if (e) {
+							$.post(getContextPath() + "/api/sys/user/delete", "id=" + id, function(resultBean, status, xhRequest) {
+								if (!handleAjaxRequest(resultBean, status, xhRequest))
+									return;
+								if (resultBean.success) {
+									_message("删除成功", loadUser);
+								} else {
+									_message("删除失败");
+								}
+							}, 'json');
+						}
+					});
+				});
+				$(".resetPwd").click(function() {
+					var id = $(this).attr("data");
+					_confirmDialog("亲，你确定要重置密码吗？密码重置后为：12345678。", "重置密码温馨提示", function(e) {
+						if (e) {
+							$.post(getContextPath() + "/api/sys/user/resetPwd", {"id":id,"pwd":encryptByMd5("12345678")}, function(resultBean, status, xhRequest) {
+								if (!handleAjaxRequest(resultBean, status, xhRequest))
+									return;
+								if (resultBean.success) {
+									_message("重置密码成功！密码为：12345678。", loadUser);
+								} else {
+									_message("重置密码失败");
+								}
+							}, 'json');
+						}
+					});
+				});
+				checkPermission();
+				setAjaxPagerValues("loadUser", resultBean.data.dataSize, resultBean.data.pageSize, resultBean.data.currentPage);
+			}, 'json');
+		}
+		initXytItem();
+		$("#resetButton").click(function() {
+			$("#userSearchForm")[0].reset();
+			$("#regionId").val('');
+			loadUser();
+		});
+	</script>
+</body>
+</html>

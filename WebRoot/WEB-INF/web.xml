@@ -48,6 +48,16 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+	<!-- 防止浏览器缓存页面或请求结果 -->
+	<filter>
+        <filter-name>NoCacheFilter</filter-name>
+        <filter-class>com.xjj.anes.mvc.filter.NoCacheFilter</filter-class>
+    </filter>
+	<filter-mapping>
+        <filter-name>NoCacheFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
 	<!-- 配置SpringMVC servlet -->
 	<servlet>
 		<servlet-name>SpringMVC</servlet-name>

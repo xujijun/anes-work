@@ -1,0 +1,10 @@
+div.xyt-pager { width: 100%; margin: 5px auto; height: 35px; line-height: 35px; font-size: 11px; }
+div.xyt-pager-content { width: 100%; margin: 10px auto 0px auto; position: relative; text-align: center; line-height: 30px; }
+div.xyt-pager-content span, div.phone580-pager-content img { margin-left: 10px; display: inline-block; cursor: pointer; }
+div.xyt-pager-content span.disabled { cursor: default; font-weight:normal;  }
+div.xyt-pager-content span.default { cursor: default; }
+div.xyt-pager-content input { text-align: center; }
+.xyt-pager-left { background: url(arrow-left.gif) no-repeat; width: 30px; height: 30px; margin-bottom: -10px; }
+.xyt-pager-right { background: url(arrow-right.gif) no-repeat; width: 30px; height: 30px; margin-bottom: -10px; }
+/*ÐÞ¸´¼æÈÝspanÍ¸Ã÷¶È*/
+div.xyt-pager div.xyt-pager-content span.opacity { opacity: 0.3; filter:progid:DXImageTransform.Microsoft.Alpha(opacity=30);-moz-opacity: 0.3; }

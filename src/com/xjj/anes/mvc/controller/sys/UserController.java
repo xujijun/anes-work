@@ -13,18 +13,17 @@ import com.xjj.anes.constants.MenuConstants;
 
 @RestController
 @RequestMapping(value = CommonConstants.UriPrefix.API + MenuConstants.SYS + "/user/")
-@SysMenu(id = MenuConstants.Sys.SYS_USER, name = "用户管理", parent = MenuConstants.SYS, orderNo = 10, uri = "/views/sys/user/list.html")
+@SysMenu(id = MenuConstants.Sys.SYS_USER, name = "用户管理", parent = MenuConstants.SYS, orderNo = 1, uri = "/views/sys/user/list.html")
 public class UserController extends SysBaseController {
 
 	@RequestMapping(value = "getUser")
 	public ResultBean getUser(HttpServletRequest request){
 		ResultBean rb = new ResultBean(true, "获取用户信息成功！");
-		/*rb.setData(super.getLoginUser(request));
-		if (rb.getData() == null)
-		{
+		rb.setData(super.getLoginUser(request));
+		if (rb.getData() == null) {
 			rb.setSuccess(false);
 			rb.setMessage("取不到对应的用户信息");
-		}*/
+		}
 		return rb;
 	}
 	

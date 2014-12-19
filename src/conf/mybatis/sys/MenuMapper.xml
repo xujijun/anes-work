@@ -3,17 +3,17 @@
 <mapper namespace="com.xjj.anes.dao.sys.MenuDao">
 
 	<sql id="selectColumns">
-		A.ID AS id,
-		A.NAME AS name,
-		A.PARENT_ID AS parentId,
-		A.URI AS uri,
-		A.ORDER_NO AS orderNo,
-		A.STATUS AS status,
-		A.CREATOR AS creator,
-		A.CREATE_DT AS createDt,
-		A.UPDATER AS updater,
-		A.UPDATE_DT AS updateDt,
-		A.REMARK AS remark
+		M.ID AS id,
+		M.NAME AS name,
+		M.PARENT_ID AS parentId,
+		M.URI AS uri,
+		M.ORDER_NO AS orderNo,
+		M.STATUS AS status,
+		M.CREATOR AS creator,
+		M.CREATE_DT AS createDt,
+		M.UPDATER AS updater,
+		M.UPDATE_DT AS updateDt,
+		M.REMARK AS remark
 	</sql>
 	
 	<!-- 插入列名 -->
@@ -96,12 +96,12 @@
 	<select id="listAll" resultType="menu">  
         SELECT
         <include refid="selectColumns" /> 
-        FROM T_SYS_MENU A  
+        FROM T_SYS_MENU M  
 	</select>
 	
 	<!-- 根据用户ID得到树形菜单 -->
 	<select id="getMenusByUser" resultType="menu">
-		SELECT M.* FROM t_sys_menu M
+		SELECT <include refid="selectColumns"/> FROM t_sys_menu M
 		WHERE M.id IN
 		(SELECT RM.menu_id FROM t_sys_role_menu RM, t_sys_user U 
 		WHERE U.id=#{userId} AND RM.role_id=U.role_id)
@@ -118,7 +118,7 @@
 	<select id="select" parameterType="string" resultType="menu">
 		SELECT
 		<include refid="selectColumns" />
-		FROM T_SYS_MENU A WHERE A.ID=#{id}
+		FROM T_SYS_MENU M WHERE M.ID=#{id}
 	</select>
 
 
@@ -127,16 +127,16 @@
 	<select id="loadTreeMenus" resultType="menu">
 		SELECT
 		<include refid="selectColumns"/> 
-		FROM T_SYS_MENU A WHERE A.STATUS != 'DEL' ORDER BY A.ORDER_NO
+		FROM T_SYS_MENU M WHERE M.STATUS != 'DEL' ORDER BY A.ORDER_NO
 	</select>
 	
 	<!-- 根据角色ID得到树形菜单 -->
 	<select id="getTreeMenusByRole" parameterType="string" resultType="menu">
 		SELECT 
 		<include refid="selectColumns"/>
-		FROM T_SYS_MENU A,T_SYS_ROLE_MENU B,T_SYS_ROLE C WHERE A.STATUS = 'DEL' 
+		FROM T_SYS_MENU M,T_SYS_ROLE_MENU B,T_SYS_ROLE C WHERE M.STATUS = 'DEL' 
 		AND B.ROLE_ID = C.ID AND C.STATUS = 'ON'
-		AND A.ID = B.MENU_ID AND B.ROLE_ID = #{roleId} ORDER BY A.ORDER_NO
+		AND M.ID = B.MENU_ID AND B.ROLE_ID = #{roleId} ORDER BY M.ORDER_NO
 	</select>
 	
 	<!-- 根据用户ID得到树形菜单 -->
@@ -147,7 +147,7 @@
        JOIN T_SYS_ROLE_MENU B ON(A.ID=B.MENU_ID)
        JOIN (SELECT ID FROM T_SYS_ROLE WHERE STATUS='1') D ON(D.ID=B.ROLE_ID)
        JOIN (SELECT ROLE_ID FROM T_SYS_ROLE_USER WHERE USER_ID=#{userId}) C ON(C.ROLE_ID=D.ID) ORDER BY A.ORDER_NO -->
-		         FROM T_SYS_MENU A
+		         FROM T_SYS_MENU M
 				   RIGHT JOIN (SELECT TSRM.MENU_ID
 				                 FROM T_SYS_ROLE_MENU TSRM
 				                RIGHT JOIN (SELECT TSR.ID
@@ -158,15 +158,15 @@
 				                                     FROM T_SYS_ROLE_USER TSRU
 				                                    WHERE TSRU.USER_ID =#{userId})) T1
 				                   ON T1.ID = TSRM.ROLE_ID) T
-				      ON A.ID = T.MENU_ID
-				   WHERE A.STATUS = 'ON' <!-- AND A.CLIENT =#{client} --> ORDER BY A.ORDER_NO
+				      ON M.ID = T.MENU_ID
+				   WHERE M.STATUS = 'ON' <!-- AND A.CLIENT =#{client} --> ORDER BY M.ORDER_NO
 	</select>
 	
 	<select id="getChildrenMenus" parameterType="string" resultType="menu">
 		SELECT
 		<include refid="selectColumns"/>
-		FROM T_SYS_MENU A WHERE 
-		(A.PARENT_ID IS NULL OR A.PARENT_ID = #{_parameter})
+		FROM T_SYS_MENU M WHERE 
+		(M.PARENT_ID IS NULL OR M.PARENT_ID = #{_parameter})
 		AND A.STATUS = 'ON'
 		ORDER BY ORDER_NO
 	</select>

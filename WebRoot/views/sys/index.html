@@ -114,7 +114,8 @@
 	       	//	if(!handleAjaxRequest(resultBean, status,xhRequest))return;
 	         //   if(!resultBean.success){alert(resultBean.message);return;}
 	       		if(!resultBean.success){
-	       		    _message(resultBean.message,function(){},"error");
+	       		    //_message(resultBean.message, function(){}, "error");
+	       		    _showMessage(resultBean.message,"errof",3000);
 	       			return;
 	       	     }
 	       		window.location.href = getContextPath()+"/views/sys/main.html";

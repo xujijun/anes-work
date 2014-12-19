@@ -1,7 +1,8 @@
-function getContextPath()
-{
+function getContextPath() {
 	return "/anes-work";
 }
+
+Array.prototype.contains = function(value){return this.indexOf(value)>=0;};
 
 //未登录。直接给页面加个白色蒙板
 checkLoginError_addbackdrop=function(){
@@ -78,6 +79,120 @@ function topLoaded()
 	{
 		$("#topLoadingDiv").attr("class","top_loaded");
 	}
+}
+
+function initSelectOptions()
+{
+	$("select").each(function()
+	{
+		var isWithBlank=false;
+		var reqUrl=null,select=null,opt=null;
+		if($(this).attr("isWithBlank"))
+		{
+			isWithBlank=$(this).attr("isWithBlank").toLowerCase()=="true"?true:false;
+		}
+
+		if($(this).attr("data") && this.options.length==0)
+		{
+			select=this;
+
+			blankLabel=$(this).attr("blankLabel");
+			if(blankLabel==undefined)
+			{
+				blankLabel="";
+			}
+			
+			reqUrl=$(this).attr("data");
+			
+			if(reqUrl.indexOf("getLocalDict")!=-1){//如果是调用"getLocalDict"，则从前端缓存中获取数据
+				//var clsCode = reqUrl.substr(reqUrl.lastIndexOf("clsCode=")+8).trim();
+				var dictMap = eval(reqUrl);
+				if(dictMap != null){
+					for(var i=select.options.length;i>=0;i--) select.options.remove(i);	
+					
+					if(isWithBlank)
+					{
+						opt=document.createElement('option');
+						select.options.add(opt);
+						opt.value="";
+						opt.innerHTML=blankLabel; 
+					}
+					for(var key in dictMap)
+					{
+						opt=document.createElement('option');
+						select.options.add(opt);
+						opt.value=key;
+						opt.innerHTML=dictMap[key]; 	
+					}
+					return;
+				}else{
+					alert("未能获取数据字典！请按F5刷新页面或重新登录。");
+					return;
+				}
+			}
+			
+			if(reqUrl.indexOf(getContextPath()+"/")==-1)
+			{
+				reqUrl=getContextPath()+reqUrl;
+			}
+			var s= reqUrl.indexOf("?")==-1 ? "?_=" : "&_=";
+			
+			reqUrl=reqUrl+s+new Date().getTime();
+			
+
+			topLoading();
+			$.ajax({type:"GET",dataType:"json",url:reqUrl,async:false,success:function(resultBean, status, xhRequest)
+			{
+				topLoaded();
+				if(!handleAjaxRequest(resultBean, status,xhRequest)){return;}
+				
+				for(var i=select.options.length;i>=0;i--) select.options.remove(i);	
+				
+				if(isWithBlank)
+				{
+					opt=document.createElement('option');
+					select.options.add(opt);
+					opt.value="";
+					opt.innerHTML=blankLabel; 
+				}
+				var dataMap=resultBean.data;
+				for(var key in dataMap)
+				{
+					opt=document.createElement('option');
+					select.options.add(opt);
+					opt.value=key;
+					opt.innerHTML=dataMap[key]; 	
+				}
+				
+			}});	
+		}
+	});
+}
+
+//根据用户权限控制页面显示内容
+function checkPermission()
+{
+	var loginUser=window.top.getLoginUser();
+	if(loginUser!=undefined)
+	{
+		  var permissionIdSet=loginUser.user.permissionIdSet;
+		  var permissionId;
+		  $("a,input[type='button'],button,div").each(function()
+		  {
+			  permissionId=$(this).attr("permissionId");
+			  if(permissionId!=undefined && !permissionIdSet.contains(permissionId))
+			  {
+				  //$(this).css("display","none");
+				  $(this).remove();
+			  }
+		  });	
+	 }
+}
+
+function initXytItem()
+{
+	initSelectOptions();
+	checkPermission();
 }
 
 /**

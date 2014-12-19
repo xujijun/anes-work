@@ -38,6 +38,8 @@ import com.xjj.anes.entity.sys.Role;
 import com.xjj.anes.entity.sys.RoleMenu;
 import com.xjj.anes.entity.sys.RolePermission;
 import com.xjj.anes.entity.sys.User;
+import com.xjj.anes.service.common.CacheSessionService;
+import com.xjj.anes.service.common.SessionService;
 import com.xjj.anes.service.sys.SysService;
 import com.xjj.anes.utils.AuthxUtil;
 import com.xjj.anes.utils.ClassUtil;
@@ -55,7 +57,10 @@ public class SysServiceImpl implements SysService {
 	private RoleDao roleDao;
 	@Resource
 	private UserDao userDao;
-	
+	@Resource
+	private SessionService sessionService;
+	@Resource
+	private CacheSessionService cacheSessionService;
 
 	@Override
 	public ResultBean txLogin(HttpServletRequest request,
@@ -105,10 +110,29 @@ public class SysServiceImpl implements SysService {
 		user.setMenuList(menuDao.getMenusByUser(loginUser.getId()));
 		loginUser.setUser(user);
 		
-		//TODO cacheSessionService.txLogin(loginUser.getSessionId(), loginUser);
+		//保存用户登录信息到缓存中
+		cacheSessionService.txLogin(loginUser.getSessionId(), loginUser);
+		
+		//设置Cookie
+		request.getSession(true).setAttribute(CacheConstants.DefaultSessionIdName, loginUser.getSessionId());
+		sessionService.addCookie(request, response, CacheConstants.DefaultSessionIdName, loginUser.getSessionId());// web使用
+		response.addHeader(CacheConstants.DefaultSessionIdName, loginUser.getSessionId());// cs使用
 		
 		rb.setData(loginUser);
 		return rb;
+	}
+	
+	@Override
+	public ResultBean txLogout(HttpServletRequest request) {
+		String sessionId = sessionService.getSessionId(request);
+		if (sessionId != null) {
+			LoginUser loginUser = cacheSessionService.getLoginUser(sessionId);
+			if (loginUser != null) {
+				cacheSessionService.deleteCacheSession(sessionId);
+			}
+			request.getSession().invalidate();
+		}
+		return new ResultBean();
 	}
 	
 	@Override

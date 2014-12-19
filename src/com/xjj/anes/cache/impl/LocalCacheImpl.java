@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.xjj.anes.cache.CacheConstants;
 import com.xjj.anes.cache.CacheObject;
 import com.xjj.anes.cache.ICache;
 
@@ -25,8 +24,6 @@ public class LocalCacheImpl extends BaseCache implements ICache, Serializable {
 
 	public void init() {
 		super.init();
-		put(CacheConstants.loginUserCounter, 0L);
-		put(CacheConstants.loginUserSet, new HashSet<String>());
 
 		Timer taskTimer = new Timer(true);
 		taskTimer.scheduleAtFixedRate(new ClearExpireDataTask(), 1000 * 3, autoScanSeconds * 1000);
