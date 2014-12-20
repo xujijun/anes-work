@@ -21,4 +21,6 @@ public interface SysService {
 	 * 创建缺省账号
 	 */
 	public void txCreateDefaultAccount();
+
+	public ResultBean getRememberMe(HttpServletRequest request);
 }

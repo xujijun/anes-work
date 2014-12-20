@@ -45,11 +45,9 @@
 								<label></label> 
 								<input type="text" name="name" id="searchName" placeholder='用户名/姓名' value="" onchange="change()" onkeydown="change()" /> <label></label>
 
-								 <select name="status">
-									<option value="">状态选择</option>
-									<option value="ON">正常</option>
-									<option value="OFF">停用</option>
-								 </select>
+								<select name="status" data="getLocalDict('USER_STATUS')" iswithblank="true" blanklabel="状态选择">
+								</select>
+
 
 								<button type="button" id='but-search' permissionId="sys-user-search" class="perm"
 									onclick="loadUser()">查询</button>
@@ -58,7 +56,7 @@
 						</div>
 						<div class="table-toolbar">
 							<div class="btn-group">
-								<button type="button" id="addUser" class="btn green perm" permissionId="sys-user-add">
+								<button type="button" id="addUser" class="btn green perm" permissionId="sys-user-insert">
 									新增用户 <i class="icon-plus"></i>
 								</button>
 							</div>

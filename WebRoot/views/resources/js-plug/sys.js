@@ -107,6 +107,21 @@ function appendTrToTBody(rowNo, tBody, data, cls)
 	$("#"+tBody).html($("#"+tBody).html()+html);
 }
 
+/**
+ * 根据clsCode获取前端字典缓存中的(code, name)列表
+ * @param clsCode
+ * @returns
+ */
+function getLocalDict(clsCode){
+	var dicts = window.top.dicts;
+	for(key in dicts){
+		if(key == clsCode){
+			return dicts[key];
+		}
+	}
+	return null;
+}
+
 function initSelectOptions()
 {
 	$("select").each(function()

@@ -82,7 +82,7 @@
         {
         	$.ajaxSetup ({cache: false });
         	
-        	/* var form=document.forms["loginForm"];
+        	var form=document.forms["loginForm"];
         	$.getJSON(getContextPath()+"/api/authx/getRememberMe",{},function(resultBean)
    			{
    				if(resultBean.success)
@@ -97,7 +97,7 @@
    					form.rememberMe.checked=false;
    				}
    				form.rememberMe.value=form.rememberMe.checked;
-   			}); */
+   			}); 
         });
         
         function goLogin() 

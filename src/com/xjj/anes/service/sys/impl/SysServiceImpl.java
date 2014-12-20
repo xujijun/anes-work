@@ -1,6 +1,7 @@
 package com.xjj.anes.service.sys.impl;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +29,7 @@ import com.xjj.anes.bean.common.ResultBean;
 import com.xjj.anes.cache.CacheConstants;
 import com.xjj.anes.constants.CommonConstants;
 import com.xjj.anes.constants.SysConstants;
+import com.xjj.anes.constants.WebConstant;
 import com.xjj.anes.dao.sys.MenuDao;
 import com.xjj.anes.dao.sys.PermissionDao;
 import com.xjj.anes.dao.sys.RoleDao;
@@ -117,6 +119,15 @@ public class SysServiceImpl implements SysService {
 		request.getSession(true).setAttribute(CacheConstants.DefaultSessionIdName, loginUser.getSessionId());
 		sessionService.addCookie(request, response, CacheConstants.DefaultSessionIdName, loginUser.getSessionId());// web使用
 		response.addHeader(CacheConstants.DefaultSessionIdName, loginUser.getSessionId());// cs使用
+		
+		if (rememberMe)	{
+			List<String> list = new ArrayList<String>();
+			list.add(code);
+			list.add(password);
+			sessionService.addCookie(request, response, WebConstant.RememberMeCookieName, AuthxUtil.encryptRememberMe(list));// web使用
+		} else {
+			sessionService.removeCookie(request, response, WebConstant.RememberMeCookieName);
+		}
 		
 		rb.setData(loginUser);
 		return rb;
@@ -362,6 +373,18 @@ public class SysServiceImpl implements SysService {
 			userDao.insert(user);
 		}
 		log.info("Default roles and accounts created.");
+	}
+
+	@Override
+	public ResultBean getRememberMe(HttpServletRequest request) {
+		ResultBean rb = new ResultBean();
+		String rememberMe = sessionService.getSessionId(request, WebConstant.RememberMeCookieName);
+		if (!StringUtils.isEmpty(rememberMe)) {
+			rb.setData(AuthxUtil.unencryptRememberMe(rememberMe));
+		} else {
+			rb.setSuccess(false);
+		}
+		return rb;
 	}
 
 
