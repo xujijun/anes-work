@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -49,6 +50,8 @@ public class ControllerInterceptor implements HandlerInterceptor {
 		if (!needCheckUri(request, requestUri)) {
 			return true;
 		}
+		
+		handler=((HandlerMethod)handler).getBean();
 		
 		request.setAttribute(REQTIME, System.currentTimeMillis());
 		
@@ -113,6 +116,8 @@ public class ControllerInterceptor implements HandlerInterceptor {
 			return loginUser;
 		}
 
+		System.out.println("handler: " + handler.getClass().getName());
+		
 		SessionChecking sessionChecking = AnnotationUtils.findAnnotation(handler.getClass(), SessionChecking.class);
 		if (sessionChecking != null && sessionChecking.isCheck()) {// 需要检查Session
 			loginUser = cacheSessionService.getLoginUser(sessionService.getSessionId(request));

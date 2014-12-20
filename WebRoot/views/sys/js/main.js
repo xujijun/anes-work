@@ -18,7 +18,7 @@ $(function(){
 			loginUser=resultBean.data;
 			var menuList = resultBean.data.user.menuList;
 			$("#userNameLabel").html(resultBean.data.name);
-			$("#user_type").html("【"+resultBean.data.user.typeName+"】");
+			$("#user_code").html("【"+resultBean.data.code+"】");
 			//filter(menuList);
 			buildTreeMenu(menuList);
 		}
@@ -56,6 +56,10 @@ function goLogout() {
         if (!handleAjaxRequest(resultBean, status, xhRequest)) return;
         top.document.location.href = getContextPath() + "/views/index.html";
     });
+}
+
+function goHome(){
+	$("#iframeid").attr("src", "home.html");
 }
 
 //构建菜单树

@@ -105,6 +105,7 @@
 		WHERE M.id IN
 		(SELECT RM.menu_id FROM t_sys_role_menu RM, t_sys_user U 
 		WHERE U.id=#{userId} AND RM.role_id=U.role_id)
+		ORDER BY M.order_no
 	</select>
 	
 	<!-- =======================有用分割线======================= -->
