@@ -1,5 +1,6 @@
 package com.xjj.anes.mvc.controller.sys;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,12 +12,15 @@ import com.xjj.anes.bean.common.ResultBean;
 import com.xjj.anes.constants.CommonConstants;
 import com.xjj.anes.constants.MenuConstants;
 import com.xjj.anes.entity.sys.User;
+import com.xjj.anes.service.sys.UserService;
 
 @RestController
 @RequestMapping(value = CommonConstants.UriPrefix.API + MenuConstants.SYS + "/user/")
 @SysMenu(id = MenuConstants.Sys.SYS_USER, name = "用户管理", parent = MenuConstants.SYS, orderNo = 1, uri = "/views/sys/user/list.html")
 public class UserController extends SysBaseController {
-
+	@Resource
+	protected UserService userService;
+	
 	@RequestMapping(value = "getUser")
 	public ResultBean getUser(HttpServletRequest request){
 		ResultBean rb = new ResultBean(true, "获取用户信息成功！");
@@ -44,10 +48,10 @@ public class UserController extends SysBaseController {
 	
 	//修改密码
 	@RequestMapping(value = "modifypwd")
-	public ResultBean modifypwd(HttpServletRequest request, User user)
-	{
+	public ResultBean modifypwd(HttpServletRequest request, User user) {
 		user.setId(getLoginUser(request).getUser().getId());
-		return null;//TODO userService.modifypwd(user);
+		return userService.modifypwd(user);
 	}
+	
 	//TODO Other methods
 }

@@ -8,7 +8,7 @@
 	<bean id="startupTask" class="com.xjj.anes.schedule.StartupTask" />
 	<bean id="startupScheduledTask" class="org.springframework.scheduling.concurrent.ScheduledExecutorTask">
 		<property name="delay" value="3000" />
-		<property name="period" value="0" />
+		<property name="period" value="0" /> <!-- 0表示只执行一次，毫秒 -->
 		<property name="runnable" ref="startupTask" />
 	</bean>
 
@@ -18,6 +18,29 @@
 				<ref bean="startupScheduledTask" />
 			</list>
 		</property>
+	</bean>
+
+	<!-- 调度触发器 -->
+	<bean id="putDataToCacheTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	    <property name="jobDetail">
+	    	<!-- 设置被调度的对象和方法 -->
+	        <bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	            <property name="concurrent" value="false"/>
+	            <property name="targetObject" ref="startupTask"/>
+	            <property name="targetMethod" value="putDataToCache"/>
+	        </bean>
+	    </property>
+	    <property name="cronExpression" value="0 0 0/2 * * ?"/> <!-- 每两个小时执行一次 -->
+	</bean>
+	
+	<!-- 调度工厂 -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	      <property name="triggers">
+			<list>
+				 <ref bean="putDataToCacheTrigger" /> 
+			</list>
+	      </property>
+	      <property name="startupDelay" value="6"/>
 	</bean>
 
 </beans>

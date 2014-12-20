@@ -25,7 +25,7 @@ public class LocalCacheImpl extends BaseCache implements ICache, Serializable {
 	public void init() {
 		super.init();
 
-		Timer taskTimer = new Timer(true);
+		Timer taskTimer = new Timer(true); //true表示这个timer以daemon方式运行（优先级低，程序结束timer也自动结束）  
 		taskTimer.scheduleAtFixedRate(new ClearExpireDataTask(), 1000 * 3, autoScanSeconds * 1000);
 
 		log.info("Local cache object has been created.");

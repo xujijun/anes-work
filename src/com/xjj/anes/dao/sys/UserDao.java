@@ -18,5 +18,8 @@ public interface UserDao {
 	
 	//获取用户权限
 	public Set<String> getUserPermissionIds(@Param("userId") String userId);
+	
+	//修改密码
+	public int modifypwd(User user);
 
 }

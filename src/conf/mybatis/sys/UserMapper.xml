@@ -102,15 +102,23 @@
 		SELECT COUNT(*)	FROM t_sys_user WHERE id=#{id}
 	</select>
 	
+	
 	<select id="getUserByCode" parameterType="string" resultType="user">
 		SELECT <include refid="selectColumns" />
 		FROM T_SYS_USER A WHERE A.code=#{code} AND A.status='ON' 
 	</select>
 	
+	
 	<select id="getUserPermissionIds" parameterType="map" resultType="string">
 		SELECT RP.permission_id from t_sys_user U, t_sys_role R, t_sys_role_permission RP
 		WHERE U.id=#{userId} AND R.id=U.role_id AND RP.role_id=R.id
 	</select>	
+	
+	<!-- 修改密码 -->
+	<update id="modifypwd" parameterType="user" >
+		UPDATE T_SYS_USER SET PASSWORD=#{newPassword} WHERE ID=#{id} and PASSWORD=#{password} 
+	</update>
+	
 	<!-- =======================有用分割线======================= -->
 	
 	<insert id="batchInsert" parameterType="list">
@@ -198,9 +206,7 @@
 		<![CDATA[UPDATE T_SYS_USER set STATUS=#{status},UNLOCK_DT=null  where STATUS=#{lockStatus} and UNLOCK_DT<=#{dt}]]>
 	</update>
 	
-	<update id="modifypwd" parameterType="user" >
-		UPDATE T_SYS_USER SET PASSWORD=#{newPassword} WHERE ID=#{id} and PASSWORD=#{password} 
-	</update>
+
 	
 	<update id="updateUserByUnitId" parameterType="user" >
 		UPDATE 

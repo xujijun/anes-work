@@ -51,8 +51,9 @@ public class ControllerInterceptor implements HandlerInterceptor {
 			return true;
 		}
 		
-		handler=((HandlerMethod)handler).getBean();
-		
+		if(handler instanceof HandlerMethod){
+			handler=((HandlerMethod)handler).getBean();
+		}
 		request.setAttribute(REQTIME, System.currentTimeMillis());
 		
 		LoginUser loginUser = handleSessionChecking(request, response, handler);
