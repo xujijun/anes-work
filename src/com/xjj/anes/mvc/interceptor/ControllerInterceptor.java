@@ -117,7 +117,7 @@ public class ControllerInterceptor implements HandlerInterceptor {
 			return loginUser;
 		}
 
-		System.out.println("handler: " + handler.getClass().getName());
+		//System.out.println("handler: " + handler.getClass().getName());
 		
 		SessionChecking sessionChecking = AnnotationUtils.findAnnotation(handler.getClass(), SessionChecking.class);
 		if (sessionChecking != null && sessionChecking.isCheck()) {// 需要检查Session

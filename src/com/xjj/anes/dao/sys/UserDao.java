@@ -1,9 +1,11 @@
 package com.xjj.anes.dao.sys;
 
+import java.util.List;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.xjj.anes.entity.PagerEntity;
 import com.xjj.anes.entity.sys.User;
 
 public interface UserDao {
@@ -21,5 +23,10 @@ public interface UserDao {
 	
 	//修改密码
 	public int modifypwd(User user);
+
+	//统计
+	public long count(PagerEntity pagerEntity);
+	//分页搜索
+	public List<User> search(PagerEntity pagerEntity);
 
 }

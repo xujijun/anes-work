@@ -10,8 +10,7 @@ checkLoginError_addbackdrop=function(){
 	$(Login_Backdrop).appendTo('body');
 };
 
-function handleAjaxRequest(resultBean, status, XMLHttpRequest)
-{
+function handleAjaxRequest(resultBean, status, XMLHttpRequest){
 	if(!resultBean.success)
 	{
 		if(resultBean.messageCode=="01")
@@ -79,6 +78,33 @@ function topLoaded()
 	{
 		$("#topLoadingDiv").attr("class","top_loaded");
 	}
+}
+
+
+/**
+ * 向table body中添加一行数据
+ * rowNo：行数
+ * tBody：tbody id
+ * data：一个数据对象，如：new Array(bean.code, bean.name)
+ */
+function appendTrToTBody(rowNo, tBody, data, cls)
+{
+    var html = "<tr class='" + (rowNo % 2 == 0 ? 'row_0' : 'row_1') + " " + (rowNo % 2 == 0 ? 'odd' : 'even') + "'>";
+	var s=data.length;
+	if(cls==undefined || cls==null) cls=new Array(s);
+	for(var i=0;i<s;i++)
+	{
+		if(cls[i]==undefined || cls[i]==null || cls[i]=="")
+		{
+			html+="<td>";
+		}else{
+			html+="<td class='"+cls[i]+"'>";
+		}
+		html+=data[i];
+		html+="</td>";
+	}
+	html+="</tr>";
+	$("#"+tBody).html($("#"+tBody).html()+html);
 }
 
 function initSelectOptions()

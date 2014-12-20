@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.xjj.anes.annotation.PermissionChecking;
 import com.xjj.anes.annotation.SysMenu;
+import com.xjj.anes.bean.common.Pager;
 import com.xjj.anes.bean.common.ResultBean;
 import com.xjj.anes.constants.CommonConstants;
 import com.xjj.anes.constants.MenuConstants;
@@ -34,9 +35,8 @@ public class UserController extends SysBaseController {
 	
 	@RequestMapping(value = "search")
 	@PermissionChecking(id = MenuConstants.Sys.SYS_USER + "-search", name = "搜索")
-	public ResultBean search(){
-	//public ResultBean search(HttpServletRequest request, Pager<User> pager, UserVo userVo){
-		return null;
+	public ResultBean search(HttpServletRequest request, Pager<User> pager, User user){
+		return userService.search(pager, user);
 	}
 	
 	@RequestMapping(value = "add")

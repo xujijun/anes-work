@@ -8,17 +8,29 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.xjj.anes.serializer.DateTimeSerializer;
+import com.xjj.anes.utils.CacheUtil;
 
 public class User extends CoreEntity {
 	private String code;
 	private String password;
-	private String newPassword;
 	private String name;
 	private String status;
 	private String userType;
 	private String roleId;
 	private String remark;
 	private Date unlockDt;
+
+	//非数据库字段
+	private String newPassword;
+	private String roleName;
+	
+	//转为中文名的字段
+	public String getTypeName(){
+		return CacheUtil.getUserTypeName(userType);
+	}
+	public String getStatusName(){
+		return CacheUtil.getUserStatusName(status);
+	}
 	
 	private List<Menu> menuList = new ArrayList<Menu>();
 	private Set<String> permissionIdSet = new HashSet<String>();
@@ -89,6 +101,12 @@ public class User extends CoreEntity {
 	}
 	public void setNewPassword(String newPassword) {
 		this.newPassword = newPassword;
+	}
+	public String getRoleName() {
+		return roleName;
+	}
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 
 	

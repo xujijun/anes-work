@@ -24,9 +24,7 @@ public class SysConstants {
 
 	public static class SystemSetup	{
 		public final static String lockUserMinutes = "LUMS";
-		public final static String lockUserMinutesForPassword = "LUMSFP";
 		public final static String tryTimesForLogin = "TTFL";
-		public final static String tryTimesForLoginPassword = "TTFLP";
 	}
 
 	public static class CacheRI	{

@@ -42,29 +42,15 @@
 					<div class="contentbox-body">
 						<div class="table-query">
 							<div class="table-group query-inline-num5" permissionId="sys-user-search" >
-								<label></label> <input type="text" name="searchName" id="searchName" placeholder='用户名/姓名'
-									value="" onchange="change()" onkeydown="change()" /> <label></label> <select name="status">
+								<label></label> 
+								<input type="text" name="name" id="searchName" placeholder='用户名/姓名' value="" onchange="change()" onkeydown="change()" /> <label></label>
+
+								 <select name="status">
 									<option value="">状态选择</option>
 									<option value="ON">正常</option>
 									<option value="OFF">停用</option>
-								
 								 </select>
-								 
-								 <!-- <select name="userTypeSearch" id="userTypeSearch">
-									<option value="">用户类型</option>
-									<option value="SYS">系统管理</option>
-									<option value="OPERATION">运营管理</option>
-									<option value="SUPPORT">支撑管理</option>
-									<option value="TELECOM">电信管理</option>
-								</select> 
-								
-								<select id="entType" style="display: none;" name="entType"
-									data="/api/sys/getDicts?clsCode=USER_TYPE" iswithblank="true" blanklabel="用户类型"></select>
-								
-								<div dialogTitle="" class="xyt-select" id="componentId" style="margin-bottom: 11px;"
-									_id='textId' hiddenFieldName="regionId" hiddenIdValue="" displayValue="选择地区" _Title='选择地区'
-									action="loadUserRegions('componentId','/api/sys/region/getRegionTreeNodes')"></div>
-								 -->
+
 								<button type="button" id='but-search' permissionId="sys-user-search" class="perm"
 									onclick="loadUser()">查询</button>
 								<button type="button" class="perm" id="resetButton">重置</button>
@@ -72,7 +58,7 @@
 						</div>
 						<div class="table-toolbar">
 							<div class="btn-group">
-								<button type="button" id="addUser" class="btn green perm" permissionId="sys-user-insert">
+								<button type="button" id="addUser" class="btn green perm" permissionId="sys-user-add">
 									新增用户 <i class="icon-plus"></i>
 								</button>
 							</div>
@@ -83,10 +69,11 @@
 									<thead>
 										<tr>
 											<th>用户名</th>
-											<th>名称</th>
+											<th>姓名</th>
 											<th>状态</th>
 											<th>类型</th>
-											<th style="width: 220px;">地区</th>
+											<th>角色</th>
+											<th>备注</th>
 											<th class="operate4" style="width: 220px;">操作</th>
 										</tr>
 									</thead>
@@ -108,27 +95,12 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			createPager("loadUser", "xyt-pager");
-			if (window.top.getLoginUser().user.userType == 'OPT') {
-				$("#entType").show();
-			}
-			var loginUserType = window.top.getLoginUser().user.userType;
-			if (loginUserType == "OPERATION") {
-				$("#userTypeSearch option[value='SYS']").remove();
-			} else if(loginUserType != "SYS"){
-				$("#userTypeSearch").remove();
-			}
-			if (window.top.getLoginUser().userAccount === true) {
-				$("#systemMenuName").text("用户管理");
-			}
 			$("#addUser").click(function() {
 				var temp_url = getContextPath() + "/views/sys/user/add.html";
 				_Dialog('新增用户', temp_url, loadUser);
 			});
 			loadUser();
-			//placeholder();
-			//$("input").addClass("placeholder");
-			//$("select").css({"color":"black"});
-			//changesel_input_style();
+
 			$(".table-query input").addClass("gr_class");
 			$(".table-query input").focus(function() {
 				$(this).removeClass("gr_class");
@@ -158,11 +130,11 @@
 		var loginUserId = window.top.getLoginUser().user.id;
 		var loginUserCode = window.top.getLoginUser().user.code;
 		function loadUser() {
-			//      topLoading();
-			$('[placeholder]').focusin();
+			topLoading();
+			//$('[placeholder]').focusin();
 			$.post(getContextPath() + "/api/sys/user/search", $("#userSearchForm").serialize(), function(resultBean, status, request) {
-				//         topLoaded();
-				$('[placeholder]').focusout();
+				topLoaded();
+				//$('[placeholder]').focusout();
 				if (!handleAjaxRequest(resultBean, status, request)) {
 					return;
 				}
@@ -172,6 +144,7 @@
 				var s = beanList.length;
 				for (var i = 0; i < s; i++) {
 					bean = beanList[i];
+					
 					var opt = "";
 					if(loginUserId==bean.id||bean.code==loginUserCode.substring(0,loginUserCode.length-3)){
 						opt = "<a href='javascript:void(0);' class='viewUser perm' permissionId='sys-user-view' data='" + bean.id
@@ -183,7 +156,7 @@
 						+ "'>修改</a><a href='javascript:void(0);' class='delUser perm' permissionId='sys-user-delete' data='" + bean.id + "'>删除</a>"
 						+"<a href='javascript:void(0);' class='resetPwd perm' permissionId='sys-user-resetPwd' data='" + bean.id + "'>重置密码</a>";
 					}
-					appendTrToTBody(i, "loadUserContent", new Array(bean.code, bean.name, bean.statusName, bean.typeName, bean.regionName,opt));
+					appendTrToTBody(i, "loadUserContent", new Array(bean.code, bean.name, bean.statusName, bean.typeName, bean.roleName, bean.remark, opt));
 				}
 
 				$(".permission").click(function() {

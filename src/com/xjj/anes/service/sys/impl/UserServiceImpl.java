@@ -4,8 +4,10 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.xjj.anes.bean.common.Pager;
 import com.xjj.anes.bean.common.ResultBean;
 import com.xjj.anes.dao.sys.UserDao;
+import com.xjj.anes.entity.PagerEntity;
 import com.xjj.anes.entity.sys.User;
 import com.xjj.anes.service.sys.UserService;
 
@@ -26,6 +28,23 @@ public class UserServiceImpl implements UserService {
 			resultBean.setSuccess(false);
 		}
 		return resultBean;
+	}
+
+	@Override
+	public ResultBean search(Pager<User> pager, User user) {
+		ResultBean rb = new ResultBean();
+		
+		PagerEntity pagerEntity = new PagerEntity(user, pager.getOffset(), pager.getPageSize());
+		pager.setDataSize(userDao.count(pagerEntity));
+		if (pager.getDataSize() > 0) {
+			if (pager.getDataSize() < pagerEntity.getOffset()) {
+				pagerEntity.setOffset(0);
+			}
+			pager.setBeanList(userDao.search(pagerEntity));
+		}
+		
+		rb.setData(pager);
+		return rb;
 	}
 
 }
