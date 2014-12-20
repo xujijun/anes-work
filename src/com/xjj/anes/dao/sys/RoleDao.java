@@ -1,5 +1,6 @@
 package com.xjj.anes.dao.sys;
 
+import java.util.List;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
@@ -9,9 +10,11 @@ import com.xjj.anes.entity.sys.RoleMenu;
 import com.xjj.anes.entity.sys.RolePermission;
 
 public interface RoleDao {
-	public Role select(@Param("id") String id);
+	public Role selectById(@Param("id") String id);
 	
 	public int insert(Role entity);
+	
+	public List<Role> selectAllValid();
 	
 	// id是否已经存在：0：不存在；>0：存在
 	public int exists(@Param("id") String id);

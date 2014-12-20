@@ -15,4 +15,10 @@ public interface UserService {
 
 	//搜索用户
 	ResultBean search(Pager<User> pager, User user);
+
+	//新增用户
+	ResultBean insert(User user);
+
+	//检查用户名是否可用
+	boolean checkCode(String code);
 }

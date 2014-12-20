@@ -77,12 +77,17 @@
 		UPDATE T_SYS_ROLE SET STATUS="DEL" WHERE ID = #{id}
 	</delete>
 
-	<select id="select" parameterType="string" resultType="role">
+	<select id="selectById" resultType="role">
 		SELECT
 		<include refid="selectColumns" />
 		FROM T_SYS_ROLE A WHERE ID=#{id}
 	</select>
 
+	<select id="selectAllValid" resultType="role">
+		SELECT id, name
+		FROM T_SYS_ROLE WHERE status='ON'
+	</select>
+	
 	<!-- id是否已经存在：0：不存在；>0：存在 -->
 	<select id="exists" resultType="int">
 		SELECT COUNT(*)	FROM t_sys_role WHERE id=#{id}
@@ -135,13 +140,6 @@
 	</insert>
 	
 	<!-- =======================有用分割线======================= -->
-
-	<select id="getRolesByMerchantId" parameterType="map" resultType="hashmap"> 		
- 		SELECT ID as "id",NAME as "name" FROM (SELECT * FROM T_SYS_ROLE 
- 		WHERE STATUS=#{status} <!-- AND ROLE_TYPE=#{entType} -->) A
-		WHERE A.MERCHANT_ID=#{merchantId}
-	</select>
-	
 		
 	<select id="getSystemMenus" parameterType="map" resultType="hashmap">
 		SELECT DISTINCT A.ID as "id", A.NAME as "name", A.PARENT_ID as "pid", 'true' as "isParent" 
@@ -191,7 +189,7 @@
 	</select>
 
 	<select id="countRecords" resultType="int">
-		SELECT count(*) FROM T_SYS_ROLE WHERE STATUS!='DEL'
+		SELECT count(*) FROM T_SYS_ROLE WHERE
 	</select>
 	
 	<select id="isSystemRole" parameterType="string" resultType="int">
@@ -206,16 +204,6 @@
 	<select id="getRolesByUserType" parameterType="string" resultType="hashmap">
 		SELECT A.ID as "id",A.NAME as "name" FROM T_SYS_ROLE A
 	 		WHERE A.STATUS='ON' 
-	</select>
-	
-	
-	<select id="getRolesByRegionCode" parameterType="string" resultType="hashmap">
-		SELECT A.ID as "id",A.NAME as "name" 
-		FROM T_SYS_ROLE A 
-		LEFT JOIN T_SYS_USER B ON A.creator=B.CODE 
-		LEFT JOIN T_SYS_REGION Y ON B.REGION_ID=Y.ID 
-		WHERE A.STATUS='ON' 
-			AND Y.CODE LIKE CONCAT(#{regionCode},'%')
 	</select>
 	
 	<!-- 查询是否存在相同名称的角色 -->

@@ -11,8 +11,8 @@
 <!-- 树型选择器样式 -->
 <link href="../resources/xyt-select/style.css" rel="stylesheet" />
 <!-- 树型选择器 -->
-<script src="../resources/js-plug/jquery.jstree.js"></script>
-<script src="../resources/xyt-select/select.js"></script>
+<!-- <script src="../resources/js-plug/jquery.jstree.js"></script>
+<script src="../resources/xyt-select/select.js"></script> -->
 <style type="text/css">
 .txt {
 	width: 161px;
@@ -107,48 +107,37 @@ label.orgError {
 						<div class="row" id="userTypeDiv">
 							<label class="labeltext xing">用户类型：</label>
 							<div class="middleradio">
-								<!-- <select name="userType" id="userType" onchange="changeUserType();" class="middleinput">
-									<option value="">选择类型</option>
-									<option value="SYS">系统管理</option>
-									<option value="OPERATION">运营管理</option>
-									<option value="SUPPORT">支撑管理</option>
-									<option value="TELECOM">电信管理</option>
-								</select>  -->
-								<select name="status" data="getLocalDict('USER_TYPE')" iswithblank="true" blanklabel="类型选择">
+								<select name="userType" id="userType" data="getLocalDict('USER_TYPE')" iswithblank="true" blanklabel="类型选择">
 								</select>
 								<b style="color: red;">*</b>
 							</div>
 						</div>
-						<div class="row" id="codeDiv" style="display: none;">
+						<div class="row" id="roleDiv">
+							<label class="labeltext xing">所属角色：</label>
+							<div class="middleradio">
+								<select name="roleId" id="roleId" data="/api/authx/getRoleList" iswithblank="true" blanklabel="角色选择">
+								</select>
+								<b style="color: red;">*</b>
+							</div>
+						</div>
+						<div class="row" id="codeDiv">
 							<label class="labeltext xing">用户名：</label> <input type="text" name="code" maxlength="20"
-								id="code" class="middleinput" /> <input type="text" style="display: none;" /> <b
-								style="color: red;" class="edit_hide">*</b>
+								id="code" class="middleinput" /> <input type="text" style="display: none;" /> 
+								<b style="color: red;" class="edit_hide">*</b>
 						</div>
 						<div class="row" style="display: none;">
 							<label class="labeltext xing">密码：</label> <input type="password" name="password"
-								maxlength="20" id="password" value="12345678" class="middleinput"><b
-								style="color: red;" class="edit_hide">*</b> <span id="pwdSPAN" style="color: green;"></span>
+								maxlength="20" id="password" value="12345678" class="middleinput">
+								<b style="color: red;" class="edit_hide">*</b> <span id="pwdSPAN" style="color: green;"></span>
 						</div>
 						<!--  <div class="row">
                             <label class="labeltext xing">确认密码：</label>
                             <input type="password" name="repassword"  maxlength="20" id="repassword" class="middleinput" /><b style="color: red;" class="edit_hide">*</b>
                         </div> -->
 						<div class="row">
-							<label class="labeltext xing">名称：</label> <input type="text" name="name" id="name"
+							<label class="labeltext xing">姓名：</label> <input type="text" name="name" id="name"
 								maxlength="15" class="middleinput" /><b style="color: red;">*</b>
 						</div>
-						<!-- <div class="row orgOnly" id="regionDiv">
-							<label class="labeltext xing">地区：</label>
-							<div dialogTitle="" class="xyt-select" id="componentId" style="margin-bottom: 11px;"
-								_id='textId' hiddenFieldName="regionId" hiddenIdValue="" displayValue="选择地区" _Title='选择地区'
-								action="loadUserRegions('componentId','/api/sys/region/getRegionTreeNodes')"></div>
-							<label id="regionError" class="orgError" style="display: none;">必填信息</label><b
-								style="color: red;">*</b>
-						</div>
-						<div class="row orgOnly" style="clear: left;">
-							<label class="labeltext xing">单位名称：</label> <input type="text" name="merchantName"
-								id="merchantName" maxlength="100" class="middleinput" />
-						</div> -->
 					</div>
 					<div class="row">
 						<label class="labeltext xing">状态：</label>
@@ -157,19 +146,11 @@ label.orgError {
 								<option value="1">正常</option>
 								<option value="0">暂停</option>
 							</select> -->
-							<select name="status" data="getLocalDict('USER_STATUS')" iswithblank="true" blanklabel="状态选择">
+							<select id="status" name="status" data="getLocalDict('USER_STATUS')" iswithblank="true" blanklabel="状态选择">
 							</select>
 							<b style="color: red;">*</b>
 						</div>
 					</div>
-					<!--   <div class="row">
-                        <label class="labeltext xing">有效期开始：</label>
-                        <input type="text" id="beginDt" name="beginDt" readonly="readonly" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'endDt\')}',dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:true})" class="middleinput Wdate" /><b style="color: red;">*</b>
-                    </div>
-                    <div class="row">
-                        <label class="labeltext xing">有效期结束：</label>
-                        <input type="text" id="endDt" name="endDt" readonly="readonly" onclick="WdatePicker({minDate:'#F{$dp.$D(\'beginDt\')}',dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:true})" class="middleinput Wdate" /><b style="color: red;">*</b>
-                    </div> -->
 					<div class="row">
 						<label class="labeltext">备注：</label>
 						<textarea class="middletextarea" id='remark' rows="5" name='remark' maxlength="50"
@@ -178,7 +159,7 @@ label.orgError {
 						</label>
 					</div>
 					<div class="row">
-						<span style="color: gray;">用户登录账号自动生成，默认初始密码为：12345678。</span>
+						<span style="color: gray;">用户初始密码为：12345678。</span>
 					</div>
 				</div>
 				<div class="form-save">
@@ -203,41 +184,11 @@ label.orgError {
 	<script type="text/javascript">
 		$(document).ready(function() {
 			//取参数值
-			$("#code").focus();
+			$("#roleId").focus();
 			//浏览器记住密码功能会自动给字段赋值,造成新增用户有值现象
 			$("#code").val("");
 			$("#password").val("");
-			/* var loginUserType = window.top.getLoginUser().user.userType;
-			if (loginUserType == "OPERATION") {
-				$("#regionDiv").hide();
-				$("#userType option[value='SYS']").remove();
-			} else if (loginUserType == "SUPPORT") {
-				$("#userType option[value='SYS']").remove();
-				$("#userType option[value='OPERATION']").remove();
-				$("#userType option[value='TELECOM']").remove();
-			} else if (loginUserType == "TELECOM") {
-				$("#userType option[value='SYS']").remove();
-				$("#userType option[value='OPERATION']").remove();
-				$("#userType option[value='SUPPORT']").remove();
-			} else {
-				$("#regionDiv").hide();
-				$("#codeDiv").show();
-			} */
-			$("#userForm").on("submit", function() {
-				if ($("#regionId").val()) {
-					$("#regionError").hide();
-				} else {
-					$("#regionError").show();
-				}
-			});
-			countWorld();
-			jQuery.validator.addMethod("sysrrequired", function(value, element, param) {
-				if ($("#userType").val() == "SYS" && $.trim($("#code").val()) == "") {
-					return false;
-				} else {
-					return true;
-				}
-			}, "必填信息");
+			countWord();
 			var validateConfige = {
 				rules : {
 					name : {
@@ -245,7 +196,7 @@ label.orgError {
 						"maxlength" : 15
 					},
 					code : {
-						sysrrequired : true,
+						"required" : true,
 						maxlength : 20,
 						remote : {
 							url : getContextPath() + "/api/sys/user/checkCode",
@@ -282,10 +233,6 @@ label.orgError {
 					}
 				},
 				submitHandler : function() {
-					if (($("#userType").val()!="SYS"&&$("#userType").val()!="OPERATION")&&!$("#regionId").val()) {
-						$("#regionError").show();
-						return false;
-					} else {
 						$("#saveButton").attr("disabled", true);
 						//$("#password").val(encryptByMd5($("#password").val()));
 						$("#password").val(encryptByMd5("12345678"));
@@ -294,23 +241,25 @@ label.orgError {
 							$elDialogdialog.remove();
 							$("#modalDialog").remove();
 							topLoaded();
-							if (!handleAjaxRequest(resultBean, status, xhRequest))
+							if (!handleAjaxRequest(resultBean, status, xhRequest)){
+								$("#saveButton").attr("disabled", false);
 								return;
+							}	
 							if (resultBean.success) {
-								//_showMessage("开户成功！用户登录账号为：" + resultBean.message + "，初始密码为：12345678", "success", 30000);
-								_tipDialog("开户成功！用户登录账号为：" + resultBean.message + "，初始密码为：12345678","开户成功",500);
+								_showMessage("开户成功！用户登录账号为：" + resultBean.message + "，初始密码为：12345678", "success", 30000);
+								//_tipDialog("开户成功！用户登录账号为：" + resultBean.message + "，初始密码为：12345678","开户成功",500);
 							} else {
 								_showMessage("开户失败！");
 							}
 							//window.parent.loadUser();
 							$("#iframeid").contents().find("#but-search").click();
 						}, 'json'); 
-					}
 				}
 			};
 			$("#userForm").validate(validateConfige);
 			initXytItem();
-			$("#status").val("1");
+			$("#status").val("ON");
+			$("#userType").val("COM");
 		});
 	</script>
 </body>

@@ -1,9 +1,13 @@
 package com.xjj.anes.mvc.controller.sys;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xjj.anes.annotation.PermissionChecking;
@@ -14,6 +18,7 @@ import com.xjj.anes.constants.CommonConstants;
 import com.xjj.anes.constants.MenuConstants;
 import com.xjj.anes.entity.sys.User;
 import com.xjj.anes.service.sys.UserService;
+import com.xjj.anes.utils.MyUtil;
 
 @RestController
 @RequestMapping(value = CommonConstants.UriPrefix.API + MenuConstants.SYS + "/user/")
@@ -41,9 +46,25 @@ public class UserController extends SysBaseController {
 	
 	@RequestMapping(value = "insert")
 	@PermissionChecking(id = MenuConstants.Sys.SYS_USER + "-insert", name = "新增")
-	public ResultBean insert(){
-	//public ResultBean search(HttpServletRequest request, Pager<User> pager, UserVo userVo){
-		return null;
+	public ResultBean insert(HttpServletRequest request, User user){
+		User creator = getLoginUser(request).getUser();
+		user.setId(MyUtil.generateUUID());
+		user.setCreateDt(new Date());
+		user.setCreator(creator.getName());
+		return userService.insert(user);
+	}
+	
+	/**
+	 * 检查登录名是否可用 true可用； false不可用
+	 * 
+	 * @param code
+	 * @param oldCode
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "checkCode")
+	public boolean checkCode(@RequestParam(value = "code", required = true, defaultValue = "") String code){
+		return userService.checkCode(code);
 	}
 	
 	//修改密码

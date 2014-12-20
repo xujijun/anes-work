@@ -119,6 +119,10 @@
 		SELECT COUNT(*)	FROM t_sys_user WHERE id=#{id}
 	</select>
 	
+	<!-- code是否已经存在：0：不存在；>0：存在 -->
+	<select id="countCode" resultType="int">
+		SELECT count(1) FROM T_SYS_USER where CODE=#{code}
+	</select>
 	
 	<select id="getUserByCode" parameterType="string" resultType="user">
 		SELECT <include refid="selectColumns" />
@@ -166,9 +170,7 @@
 		FROM (SELECT * FROM T_SYS_USER WHERE ID=#{id} ) A 
 	</select>
 
-	<select id="countCode" parameterType="string" resultType="int">
-		SELECT count(1) FROM T_SYS_USER where CODE=#{code}
-	</select>
+
 
 
 	

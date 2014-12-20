@@ -29,4 +29,7 @@ public interface UserDao {
 	//分页搜索
 	public List<User> search(PagerEntity pagerEntity);
 
+	//code是否已经存在
+	public int countCode(String code);
+
 }

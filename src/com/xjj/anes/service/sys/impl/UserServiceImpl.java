@@ -47,4 +47,25 @@ public class UserServiceImpl implements UserService {
 		return rb;
 	}
 
+	@Override
+	public ResultBean insert(User user) {
+		ResultBean rb = new ResultBean();
+		int i = userDao.insert(user);
+		if (i <= 0)
+		{
+			rb.setSuccess(false);
+			rb.setMessage("保存失败");
+		}
+		rb.setMessage("保存成功");
+		
+		return rb;
+	}
+
+	//检查登录名是否可用 true可用； false不可用
+	@Override
+	public boolean checkCode(String code) {
+		int i = userDao.countCode(code);
+		return i<=0;
+	}
+
 }

@@ -236,6 +236,34 @@ function initXytItem()
 	checkPermission();
 }
 
+/**
+ * 统计输入字符数
+ */
+function countWord(){
+	$.each($("textarea"),function(x,y){
+		_showCount($(this));
+		$(this).on("keyup",function(){
+			_showCount($(this));
+		});
+		$(this).on("change",function(){
+			_showCount($(this));
+		});
+	});
+}
+
+function _showCount(element){
+	var maxlength = element.attr("maxlength");
+		
+	var counter = element.val() ? element.val().length : 0;
+	
+	if (counter > maxlength)
+		//如果元素区字符数大于最大字符数，按照最大字符数截断；
+		element.val(element.val().substring(0, maxlength));
+	else
+		//在记数区文本框内显示剩余的字符数；
+		element.next("label").html('(还可以输入<var style="color: #C00">'+(maxlength - counter)+'</var>个字符)');
+}
+
 //弹出框移动算法
 dialoguiDraggable= function (_dlg) {
     var elem = _dlg.find(".modal-content");

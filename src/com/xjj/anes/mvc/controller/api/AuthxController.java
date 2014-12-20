@@ -15,6 +15,7 @@ import com.xjj.anes.bean.common.ResultBean;
 import com.xjj.anes.cache.CacheConstants;
 import com.xjj.anes.cache.CacheManager;
 import com.xjj.anes.constants.CommonConstants;
+import com.xjj.anes.service.sys.RoleService;
 import com.xjj.anes.service.sys.SysService;
 
 
@@ -23,6 +24,8 @@ import com.xjj.anes.service.sys.SysService;
 public class AuthxController {
 	@Resource
 	protected SysService sysService;
+	@Resource
+	protected RoleService roleService;
 
 	@RequestMapping(value = CommonConstants.UriPrefix.PC + "login")
 	public ResultBean pcLogin(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "code", required = true) String code,
@@ -66,5 +69,14 @@ public class AuthxController {
 
 		rb.setData(dictMap);
 		return rb;
+	}
+	
+	/**
+	 * 获取角色列表，用户新增或修改的时候下拉选择
+	 * @return
+	 */
+	@RequestMapping(value = "getRoleList")
+	public ResultBean getRoleList()	{
+		return roleService.getRoleList();
 	}
 }
