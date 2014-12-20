@@ -65,6 +65,7 @@
       <tx:method propagation="REQUIRED" rollback-for="Throwable" name="modify*"/>
       <tx:method propagation="REQUIRED" rollback-for="Throwable" name="tx*"/>
       <tx:method propagation="REQUIRED" rollback-for="Throwable" name="deal*"/>
+      <tx:method propagation="REQUIRED" rollback-for="Throwable" name="reset*"/>
       <tx:method read-only="true" name="*"/>  
     </tx:attributes>  
 </tx:advice> 

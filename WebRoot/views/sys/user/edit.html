@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="../resources/style/page.form.css" rel="stylesheet" />
+<link href="../resources/style/jqueryValidate/jquery.validate.css" rel="stylesheet" />
+<script src="../resources/js-plug/jquery.validate/jquery.validate.js"></script>
+<script src="../resources/js-plug/jquery.validate/jquery.validate.method.js"></script>
+<script src="../resources/js-plug/md5.js"></script>
+<!-- 树型选择器样式 -->
+<link href="../resources/xyt-select/style.css" rel="stylesheet" />
+<!-- 树型选择器 -->
+<!-- <script src="../resources/js-plug/jquery.jstree.js"></script>
+<script src="../resources/xyt-select/select.js"></script> -->
+<style type="text/css">
+.txt {
+	width: 161px;
+}
+
+.selectDiv ul {
+	width: 178px;
+}
+
+label.orgError {
+	color: #FF0000;
+	font-size: 12px;
+	font-weight: bold;
+	margin-left: 10px;
+	padding-bottom: 2px;
+}
+</style>
+</head>
+<body>
+	<div class="divCover"></div>
+	<div class="middle-main">
+		<div class="msg"></div>
+		<div class="listtab">
+			<form id="userForm" method="post">
+				<input id="id" name="id" type="hidden">
+				<div class="form-blog">
+					<div class="row" id="userTypeDiv">
+						<label class="labeltext xing">用户类型：</label>
+						<div class="middleradio">
+							<select name="userType" id="userType" data="getLocalDict('USER_TYPE')" iswithblank="true" blanklabel="用户类型">
+							</select>
+							<b style="color: red;">*</b>
+						</div>
+					</div>
+					<div class="row" id="roleDiv">
+						<label class="labeltext xing">所属角色：</label>
+						<div class="middleradio">
+							<select name="roleId" id="roleId" data="/api/authx/getRoleList" iswithblank="true" blanklabel="角色选择">
+							</select>
+							<b style="color: red;">*</b>
+						</div>
+					</div>
+					<div class="row">
+						<label class="labeltext xing">用户名：</label> <input type="text" name="code" maxlength="20"
+							id="code" class="middleinput" /><b style="color: red;">*</b>
+					</div>
+					<div class="row" >
+						<label class="labeltext xing">密码：</label> <input type="password" name="password"
+							maxlength="20" id="password" class="middleinput">
+					</div>
+					<div class="row">
+						<label class="labeltext xing">姓名：</label> <input type="text" name="name" id="name"
+							maxlength="15" class="middleinput" /><b style="color: red;">*</b>
+					</div>
+					<div class="row">
+						<label class="labeltext xing">状态：</label>
+						<div class="middleradio">
+							<select id="status" name="status" data="getLocalDict('USER_STATUS')" iswithblank="true" blanklabel="状态选择">
+							</select>
+							<b style="color: red;">*</b>
+						</div>
+					</div>
+					<div class="row">
+						<label class="labeltext">备注：</label>
+						<textarea class="middletextarea" id='remark' rows="5" name='remark' maxlength="50"
+							style="font-size: 13px"></textarea>
+						<label class="textarea-tip">(还可以输入 <var style="color: #C00">50</var>个字符)
+						</label>
+					</div>
+				</div>
+				<div class="form-save">
+					<span class="but" style="width: 85px;">
+						<button type="submit" style="width: 80px;">
+							<div class="but-left"></div>
+							<div class="but-center">保存</div>
+							<div class="but-right"></div>
+						</button>
+					</span> <span class="but" style="width: 85px;">
+						<button type="button" class="but-close" style="width: 80px;">
+							<div class="but-left"></div>
+							<div class="but-center">取消</div>
+							<div class="but-right"></div>
+						</button>
+					</span>
+					<!--- <a href="#" class="back">返回</a>-->
+				</div>
+			</form>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			//取参数值
+			$("#code").focus();
+			//浏览器记住密码功能会自动给字段赋值,造成新增用户有值现象
+			$("#name").val("");
+			initXytItem();
+			var _location_url = $("#parm_val").val();
+			var id = getUrlParam("id", _location_url);
+			var param = "id=" + id;
+			var validateConfige = {
+				rules : {
+					name : {
+						"required" : true,
+						"maxlength" : 15
+					},
+					password : {
+						"minlength" : 6,
+						"maxlength" : 20,
+						"required" : false
+					},
+					remark : {
+						"required" : false,
+						"maxlength" : 50
+					}
+				},
+				messages : {
+					password : {
+						minlength : "密码长度在6-20位之间",
+						maxlength : "密码长度在6-20位之间"
+					}
+				},
+				submitHandler : function() {
+						$("#saveButton").attr("disabled", true);
+						var pwd = $("#password").val();
+						if (pwd) {
+							$("#password").val(encryptByMd5($("#password").val()));
+						}
+						$.post(getContextPath() + "/api/sys/user/update", $("#userForm").serialize(), function(resultBean, status, xhRequest) {
+							topLoaded();
+							if (!handleAjaxRequest(resultBean, status, xhRequest))
+								return;
+							if (resultBean.success) {
+								_showMessage("保存成功!", "success", 2000);
+							} else {
+								_showMessage("保存失败!");
+								$("#saveButton").attr("disabled", false);
+							}
+						}, 'json');
+				}
+			};
+			if (id) {
+				$.post(getContextPath() + "/api/sys/user/select", param, function(resultBean, status, xhRequest) {
+					topLoaded();
+					if (!handleAjaxRequest(resultBean, status, xhRequest))
+						return;
+					if (resultBean.success) {
+						$("#id").val(id);
+						$("#code").val(resultBean.data.code);
+						$("#code").attr("disabled", true);
+						$("#name").val(resultBean.data.name);
+						$("#remark").val(resultBean.data.remark);
+						$("#textId").val(resultBean.data.regionName);
+						$("#userType").val(resultBean.data.userType);
+						$("#roleId").val(resultBean.data.roleId);
+						$("#status").val(resultBean.data.status);
+						$("#userType").change();
+						countWord();
+					} else {
+						_message("无法获取用户信息");
+					}
+				}, 'json');
+			}
+			$("#userForm").validate(validateConfige);
+		});
+	</script>
+</body>
+</html>

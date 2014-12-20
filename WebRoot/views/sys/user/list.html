@@ -143,46 +143,29 @@
 				for (var i = 0; i < s; i++) {
 					bean = beanList[i];
 					
-					var opt = "";
-					if(loginUserId==bean.id||bean.code==loginUserCode.substring(0,loginUserCode.length-3)){
-						opt = "<a href='javascript:void(0);' class='viewUser perm' permissionId='sys-user-view' data='" + bean.id
-						+ "'>查看</a>";
-					}else{
-						opt = "<a href='javascript:void(0);' permissionId='sys-user-getUserRoles' data=" + bean.id
-						+ "  class='permission perm'>分配权限</a><a href='javascript:void(0);' class='viewUser perm' permissionId='sys-user-view' data='" + bean.id
-						+ "'>查看</a><a href='javascript:void(0);' class='editUser perm' permissionId='sys-user-update' data='" + bean.id
+					var opt = "<a href='javascript:void(0);' class='editUser perm' permissionId='sys-user-update' data='" + bean.id
 						+ "'>修改</a><a href='javascript:void(0);' class='delUser perm' permissionId='sys-user-delete' data='" + bean.id + "'>删除</a>"
 						+"<a href='javascript:void(0);' class='resetPwd perm' permissionId='sys-user-resetPwd' data='" + bean.id + "'>重置密码</a>";
-					}
+					
 					appendTrToTBody(i, "loadUserContent", new Array(bean.code, bean.name, bean.statusName, bean.typeName, bean.roleName, bean.remark, opt));
 				}
 
-				$(".permission").click(function() {
-					var id = $(this).attr("data");
-					var temp_url = getContextPath() + "/views/sys/user/permission.html?id=" + id;
-					_Dialog('分配权限', temp_url, loadUser);
-				});
-				$(".viewUser").click(function() {
-					var id = $(this).attr("data");
-					var temp_url = getContextPath() + "/views/sys/user/view.html?id=" + id;
-					_Dialog('查看用户信息', temp_url, loadUser);
-				});
 				$(".editUser").click(function() {
 					var id = $(this).attr("data");
 					var temp_url = getContextPath() + "/views/sys/user/edit.html?id=" + id;
-
 					_Dialog('修改用户', temp_url, loadUser);
 				});
+				
 				$(".delUser").click(function() {
 					var id = $(this).attr("data");
-
-					_confirmDialog("亲，你确定要删除吗？", "删除温馨提示", function(e) {
+					_confirmDialog("亲，你确定要删除吗？删除后将无法恢复，请慎重！", "删除温馨提示", function(e) {
 						if (e) {
 							$.post(getContextPath() + "/api/sys/user/delete", "id=" + id, function(resultBean, status, xhRequest) {
 								if (!handleAjaxRequest(resultBean, status, xhRequest))
 									return;
 								if (resultBean.success) {
 									_message("删除成功", loadUser);
+									loadUser();
 								} else {
 									_message("删除失败");
 								}
@@ -190,6 +173,7 @@
 						}
 					});
 				});
+				
 				$(".resetPwd").click(function() {
 					var id = $(this).attr("data");
 					_confirmDialog("亲，你确定要重置密码吗？密码重置后为：12345678。", "重置密码温馨提示", function(e) {
@@ -206,11 +190,14 @@
 						}
 					});
 				});
+				
 				checkPermission();
 				setAjaxPagerValues("loadUser", resultBean.data.dataSize, resultBean.data.pageSize, resultBean.data.currentPage);
 			}, 'json');
 		}
+		
 		initXytItem();
+		
 		$("#resetButton").click(function() {
 			$("#userSearchForm")[0].reset();
 			$("#regionId").val('');

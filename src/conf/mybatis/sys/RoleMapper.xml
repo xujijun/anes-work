@@ -139,6 +139,22 @@
 		)
 	</insert>
 	
+	<select id="search" parameterType="pagerEntity" resultType="role"> 
+		SELECT
+		<include refid="selectColumns" />
+		FROM T_SYS_ROLE A 
+		<include refid="searchWhere" /> 
+		ORDER BY A.CREATE_DT DESC
+		limit #{offset}, #{pageSize}
+	</select>
+
+	<select id="count" parameterType="pagerEntity"	resultType="long">
+		SELECT count(*) FROM T_SYS_ROLE A 
+		<include refid="searchWhere" />
+	</select>
+	
+	
+	
 	<!-- =======================有用分割线======================= -->
 		
 	<select id="getSystemMenus" parameterType="map" resultType="hashmap">
@@ -169,28 +185,7 @@
 		from T_SYS_ROLE A 
 	</select>
 	
-	<select id="search" parameterType="pagerEntity" resultType="role"> 
-		SELECT
-		<include refid="selectColumns" />
-		FROM T_SYS_ROLE A 
-		LEFT JOIN T_SYS_USER B ON A.creator=B.CODE 
-		LEFT JOIN T_SYS_REGION Y ON B.REGION_ID=Y.ID 
-		<include refid="searchWhere" /> 
-		ORDER BY A.CREATE_DT DESC
-		limit #{offset}, #{pageSize}
-	</select>
 
-	<select id="count" parameterType="pagerEntity"
-		resultType="long">
-		SELECT count(*) FROM T_SYS_ROLE A 
-		LEFT JOIN T_SYS_USER B ON A.creator=B.CODE 
-		LEFT JOIN T_SYS_REGION Y ON B.REGION_ID=Y.ID 
-		<include refid="searchWhere" />
-	</select>
-
-	<select id="countRecords" resultType="int">
-		SELECT count(*) FROM T_SYS_ROLE WHERE
-	</select>
 	
 	<select id="isSystemRole" parameterType="string" resultType="int">
 		SELECT count(*) FROM T_SYS_ROLE WHERE STATUS!='DEL' and ID=#{id} 

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.xjj.anes.entity.PagerEntity;
 import com.xjj.anes.entity.sys.Role;
 import com.xjj.anes.entity.sys.RoleMenu;
 import com.xjj.anes.entity.sys.RolePermission;
@@ -30,4 +31,8 @@ public interface RoleDao {
 	
 	// 插入到role_permission关系表
 	public int insertRolePermission(RolePermission entity);
+
+	public long count(PagerEntity pagerEntity);
+
+	public List<Role> search(PagerEntity pagerEntity);
 }

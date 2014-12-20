@@ -13,10 +13,12 @@ public interface UserDao {
 
 	public int update(User entity);
 	
+	public int delete(@Param("id") String id);
+	
 	// id是否已经存在：0：不存在；>0：存在
 	public int exists(@Param("id") String id);
 	
-	public User getUserByCode(String code);
+	public User getUserByCode(@Param("code") String code);
 	
 	//获取用户权限
 	public Set<String> getUserPermissionIds(@Param("userId") String userId);
@@ -30,6 +32,13 @@ public interface UserDao {
 	public List<User> search(PagerEntity pagerEntity);
 
 	//code是否已经存在
-	public int countCode(String code);
+	public int countCode(@Param("code") String code);
+
+	//重置密码
+	public int resetPwd(@Param("id") String id, @Param("pwd") String pwd);
+
+	public User select(@Param("id") String id);
+
+
 
 }

@@ -237,6 +237,27 @@ function initXytItem()
 }
 
 /**
+ * 获取URL中参数的值
+ * 
+ * 例子：http://abc.com?action=update&id=987654321789
+ * var action = getUrlParam("action"); //返回action的值为"update"
+ * 
+ * @Param: name: 要获取的参数名字
+ * @param: _location：可选参数，页面的URL，在弹出窗口中使用
+ * @return：返回参数的值
+ */
+function getUrlParam(name, _location){
+	//console.log(window.location);
+	var _location_url =_location || window.location.search; //window.location.search：URL中问号及其后面的内容
+	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+	var r = _location_url.substr(1).match(reg); //匹配目标参数
+	if (r != null)
+		return unescape(r[2]);
+	return null; //返回参数值
+}
+
+
+/**
  * 统计输入字符数
  */
 function countWord(){
@@ -316,6 +337,55 @@ function _Dialog(title, url, callback, width, callbackpram, styleClassName) {
 	 if(width)
 		 options._dialogW = width;
     $(window.parent.showPrompt(options));
+}
+
+
+
+function _confirmDialog(msg,title,callback,okBtn,cancleBtn){
+	options = {
+            _type: 'ConfirmDialog',
+            _dialogW:450,
+            _title:title,
+            _msg: msg,
+            _closeDialog: true,
+            _callbackfn:  callback,
+            _okBtn: okBtn,
+            _cancleBtn: cancleBtn
+        };
+	$(window.parent.showPrompt(options));
+}
+
+// 弹出层提示框，带关闭按钮。
+function _tipDialog(msg,title,dialogW){
+	var _dialogW=dialogW||450;
+	options = {
+            _type: 'TipDialog',
+            _dialogW:_dialogW,
+            _title:title,
+            _msg: msg,
+            _closeDialog: true
+        };
+	showPrompt(options);
+}
+
+/**
+ * 错误提示框，在iframe中使用
+ * @param msg
+ * @param callback
+ * @param icontype: "success"/"error"
+ */
+function _message(msg, callback, icontype){	
+	var _icontype=icontype|| "success";
+	options = {
+            _type: 'MsgDialog',
+            _countdown:true,
+            _msg: msg, 
+            _msgicon: _icontype,
+            _closeDialog:true,
+            _callbackfn: callback
+        };
+
+	$(window.parent.showPrompt(options));
 }
 
 /**

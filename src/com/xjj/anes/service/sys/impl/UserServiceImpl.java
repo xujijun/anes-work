@@ -68,4 +68,46 @@ public class UserServiceImpl implements UserService {
 		return i<=0;
 	}
 
+	@Override
+	public ResultBean update(User user) {
+		ResultBean rb = new ResultBean();
+		int i = userDao.update(user);
+		if (i <= 0)	{
+			rb.setSuccess(false);
+			rb.setMessage("修改失败");
+		}
+		return rb;
+	}
+
+	@Override
+	public ResultBean delete(String id, String deleter) {
+		ResultBean rb = new ResultBean();
+		int i = userDao.delete(id);
+		if (i <= 0)	{
+			rb.setSuccess(false);
+			rb.setMessage("删除失败");
+		}
+		return rb;
+	}
+
+	@Override
+	public ResultBean resetPwd(String id, String pwd) {
+		ResultBean resultBean = new ResultBean();
+		if(userDao.resetPwd(id, pwd)>0){
+			resultBean.setMessage("重置码成功");
+			resultBean.setSuccess(true);
+		}else {
+			resultBean.setMessage("重置码失败");
+			resultBean.setSuccess(false);
+		}
+		return resultBean;
+	}
+
+	@Override
+	public ResultBean select(String id) {
+		ResultBean rb = new ResultBean();
+		rb.setData(userDao.select(id));
+		return rb;
+	}
+
 }

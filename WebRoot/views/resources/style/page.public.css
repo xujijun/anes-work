@@ -106,5 +106,5 @@ a { text-decoration: none; }
 .dialogcontent { text-align: center; font-family: "΢���ź�"; padding:20px; color: #F26E0A; font-size: 22px; }
 .butt {  overflow: hidden; _zoom: 1; padding-top: 20px; }
 .butt:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
-    .butt .but { width: 80px; height: 30px; margin-right: 20px; background: url(../images/dailog-img/anniu.png) no-repeat; color: white; font-family: "΢���ź�"; line-height: 30px; text-align: center; cursor: pointer; border: 0px; }
-    .butt .cancel { background: url(../images/dailog-img/anniu2.png) no-repeat; }
+    .butt .but { width: 80px; height: 30px; margin-right: 20px; background: url(../images/dialog-img/anniu.png) no-repeat; color: white; font-family: "΢���ź�"; line-height: 30px; text-align: center; cursor: pointer; border: 0px; }
+    .butt .cancel { background: url(../images/dialog-img/anniu2.png) no-repeat; }

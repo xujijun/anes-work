@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,7 @@ public class UserController extends SysBaseController {
 	@Resource
 	protected UserService userService;
 	
+	//登录后调用获取登录用户信息
 	@RequestMapping(value = "getUser")
 	public ResultBean getUser(HttpServletRequest request){
 		ResultBean rb = new ResultBean(true, "获取用户信息成功！");
@@ -36,6 +38,18 @@ public class UserController extends SysBaseController {
 			rb.setMessage("取不到对应的用户信息");
 		}
 		return rb;
+	}
+	
+	/**
+	 * 根据id获取一个用户
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "select")
+	public ResultBean view(@RequestParam(value = "id", required = true) String id)
+	{
+		return userService.select(id);
 	}
 	
 	@RequestMapping(value = "search")
@@ -61,7 +75,6 @@ public class UserController extends SysBaseController {
 	 * @param oldCode
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping(value = "checkCode")
 	public boolean checkCode(@RequestParam(value = "code", required = true, defaultValue = "") String code){
 		return userService.checkCode(code);
@@ -74,5 +87,48 @@ public class UserController extends SysBaseController {
 		return userService.modifypwd(user);
 	}
 	
-	//TODO Other methods
+	/**
+	 * 修改
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = "update", method = RequestMethod.POST)
+	@PermissionChecking(id = MenuConstants.Sys.SYS_USER + "-update", name = "修改")
+	public ResultBean update(HttpServletRequest request, User user)	{
+		String updater = getUserName(request);
+		user.setUpdateDt(new Date());
+		user.setUpdater(updater);
+		return userService.update(user);
+	}
+	
+	/**
+	 * 删除
+	 * 
+	 * @param request
+	 * @param response
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "delete")
+	@PermissionChecking(id = MenuConstants.Sys.SYS_USER + "-delete", name = "删除")
+	public ResultBean delete(HttpServletRequest request, @RequestParam(value = "id", required = true) String id) {
+		String deleter = getUserName(request);
+		return userService.delete(id, deleter);
+	}
+	
+	/**
+	 * 重置密码
+	 * 
+	 * @param request
+	 * @param response
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "resetPwd")
+	@PermissionChecking(id = MenuConstants.Sys.SYS_USER + "-resetPwd", name = "重置密码")
+	public ResultBean resetPwd(HttpServletRequest request, @RequestParam(value = "id", required = true) String id, @RequestParam(value = "pwd", required = true) String pwd) {
+		return userService.resetPwd(id, pwd);
+	}
+	
 }

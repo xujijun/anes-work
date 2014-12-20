@@ -14,7 +14,8 @@
 		A.creator,
 		A.CREATE_DT as createDt,
 		A.UPDATER,
-		A.UPDATE_DT as updateDt
+		A.UPDATE_DT as updateDt,
+		A.role_id as roleId
 	</sql>
 	
 	<sql id="searchColumns">
@@ -75,6 +76,7 @@
 			<if test="password != null and password !=''">PASSWORD=#{password},</if>
 			<if test="status != null">STATUS=#{status},</if>
 			<if test="userType != null">USER_TYPE=#{userType},</if>
+			<if test="roleId != null">role_id=#{roleId},</if>
 			<if test="remark != null">REMARK=#{remark},</if>
 			<if test="unlockDt != null">UNLOCK_DT=#{unlockDt},</if>
 			<if test="updater != null">UPDATER=#{updater},</if>
@@ -140,67 +142,30 @@
 		UPDATE T_SYS_USER SET PASSWORD=#{newPassword} WHERE ID=#{id} and PASSWORD=#{password} 
 	</update>
 	
-	<!-- =======================有用分割线======================= -->
-	
-	<insert id="batchInsert" parameterType="list">
-		INSERT INTO T_SYS_USER(
-			ID,CODE,PASSWORD,NAME,STATUS,USER_TYPE,REMARK,
-			creator,CREATE_DT
-		) VALUES
-		<foreach collection="list" item="item" index="index" separator=",">
-			(#{item.id},#{item.code},#{item.password},#{item.name},#{item.status},#{item.userType},#{item.remark},#{item.creator},#{item.createDt})
-		</foreach>
-	</insert>
-
-	<update id="update" parameterType="user">
+	<update id="update">
 		<if test="id != null">
 			UPDATE T_SYS_USER
 			<include refid="updateColumns" />
 			WHERE ID=#{id}
 		</if>
 	</update>
-
-	<update id="delete" parameterType="string">
-		 UPDATE T_SYS_USER SET STATUS = "DEL" WHERE ID = #{id}
+	
+	<update id="resetPwd">
+		UPDATE T_SYS_USER SET PASSWORD=#{pwd} WHERE ID=#{id}
+	</update>	
+	
+	<update id="delete">
+		 DELETE FROM T_SYS_USER WHERE ID=#{id}
 	</update>
-
+	
 	<select id="select" parameterType="string" resultType="user">
 		SELECT
 		<include refid="selectColumns" />
-		FROM (SELECT * FROM T_SYS_USER WHERE ID=#{id} ) A 
-	</select>
-
-
-
-
-	
-	<select id="getUserByCheckOrgId" parameterType="string" resultType="user">
-		SELECT <include refid="selectColumns"/> FROM T_SYS_USER A WHERE UNIT_ID=#{unitId}
-	</select>
-	<!-- 校验用户别名是否重复 -->
-	<select id="countNickName" resultType="int">
-		SELECT COUNT(1) FROM T_SYS_USER A WHERE A.NICKNAME = #{nickName,jdbcType=VARCHAR} 
-		<if test="id != null and id != ''">
-			AND A.ID=#{id,jdbcType=VARCHAR}
-		</if>
+		FROM T_SYS_USER A WHERE A.ID=#{id} 
 	</select>
 	
-	<select id="getUserByUnitId" parameterType="string"
-		resultType="user">
-		SELECT <include refid="selectColumns" />
-		FROM (SELECT * FROM T_SYS_USER WHERE UNIT_ID=#{unitId}) A limit 1
-	</select>
+	<!-- =======================有用分割线======================= -->
 
-
-	
-	<update id="updateMerchantName" parameterType="map">
-		UPDATE T_SYS_USER <!-- set MERCHANT_NAME=#{name} --> <!-- where MERCHANT_ID=#{id}  -->
-	</update>
-	
-	<update id="updatePassword" parameterType="user" >
-		UPDATE T_SYS_USER SET PASSWORD=#{password} WHERE ID=#{id} 
-	</update>
-	
 	<update id="lockUser" parameterType="map">
 		UPDATE T_SYS_USER set STATUS=#{status},UNLOCK_DT=#{unlockDt}  where CODE=#{code} 
 	</update>
@@ -208,33 +173,11 @@
 	<update id="unlockUsers" parameterType="map">
 		<![CDATA[UPDATE T_SYS_USER set STATUS=#{status},UNLOCK_DT=null  where STATUS=#{lockStatus} and UNLOCK_DT<=#{dt}]]>
 	</update>
-	
 
-	
-	<update id="updateUserByUnitId" parameterType="user" >
-		UPDATE 
-			T_SYS_USER 
-			<set> 
-				 <if test="name != null" >NAME = #{name,jdbcType=VARCHAR}, </if>
-				 <if test="unitName != null" >UNIT_NAME = #{unitName,jdbcType=VARCHAR}, </if>
-				 <if test="regionId != null" >REGION_ID = #{regionId,jdbcType=VARCHAR}, </if>
-				 <if test="updater != null" >UPDATER = #{updater,jdbcType=VARCHAR}, </if>
-				 <if test="updateDt != null" >UPDATE_DT = #{updateDt,jdbcType=TIMESTAMP} </if>
-			</set>
-		WHERE UNIT_ID=#{unitId} and STATUS='ON'
-	</update>
 	<update id="updateUnlockDtById" parameterType="user" >
 		UPDATE 
 			T_SYS_USER SET UNLOCK_DT= #{unlockDt,jdbcType=TIMESTAMP}
 		WHERE ID=#{id}
-	</update>
-	
-	<!-- 批量修改状态 -->
-	<update id="batchUpdateStatus">
-		UPDATE T_SYS_USER SET STATUS = #{status,jdbcType=VARCHAR} WHERE ID IN 
-		 <foreach collection="ids" open="(" separator="," close=")" index="index" item="item">
-	     	#{item}
-	     </foreach>
 	</update>
 	
 </mapper>

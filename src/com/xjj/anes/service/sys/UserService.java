@@ -21,4 +21,13 @@ public interface UserService {
 
 	//检查用户名是否可用
 	boolean checkCode(String code);
+
+	ResultBean update(User user);
+
+	ResultBean delete(String id, String deleter);
+
+	//重置密码
+	ResultBean resetPwd(String id, String pwd);
+
+	ResultBean select(String id);
 }
