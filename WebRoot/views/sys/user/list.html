@@ -142,11 +142,12 @@
 				var s = beanList.length;
 				for (var i = 0; i < s; i++) {
 					bean = beanList[i];
-					
-					var opt = "<a href='javascript:void(0);' class='editUser perm' permissionId='sys-user-update' data='" + bean.id
-						+ "'>修改</a><a href='javascript:void(0);' class='delUser perm' permissionId='sys-user-delete' data='" + bean.id + "'>删除</a>"
-						+"<a href='javascript:void(0);' class='resetPwd perm' permissionId='sys-user-resetPwd' data='" + bean.id + "'>重置密码</a>";
-					
+					var opt = "";
+					if(bean.id != "administrator"){ //不是超级管理员角色
+						opt = "<a href='javascript:void(0);' class='editUser perm' permissionId='sys-user-update' data='" + bean.id
+							+ "'>修改</a><a href='javascript:void(0);' class='delUser perm' permissionId='sys-user-delete' data='" + bean.id + "'>删除</a>"
+							+"<a href='javascript:void(0);' class='resetPwd perm' permissionId='sys-user-resetPwd' data='" + bean.id + "'>重置密码</a>";
+					}
 					appendTrToTBody(i, "loadUserContent", new Array(bean.code, bean.name, bean.statusName, bean.typeName, bean.roleName, bean.remark, opt));
 				}
 

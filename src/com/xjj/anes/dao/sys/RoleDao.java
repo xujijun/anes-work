@@ -1,6 +1,7 @@
 package com.xjj.anes.dao.sys;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
@@ -37,7 +38,12 @@ public interface RoleDao {
 	public List<Role> search(PagerEntity pagerEntity);
 
 	// 删除角色及其关联表
-	public int deleteRoleAndRel(String id);
+	public int deleteRoleAndRel(@Param("id") String id);
 
 	public int update(Role role);
+
+	public List<Map<String, String>> getSystemMenus();
+
+	//删除一个角色的菜单关联表、权限关联表
+	public void deleteRelByRoleId(@Param("id") String id);
 }

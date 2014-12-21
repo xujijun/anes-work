@@ -13,8 +13,10 @@ import com.xjj.anes.annotation.PermissionChecking;
 import com.xjj.anes.annotation.SysMenu;
 import com.xjj.anes.bean.common.Pager;
 import com.xjj.anes.bean.common.ResultBean;
+import com.xjj.anes.bean.sys.RoleVo;
 import com.xjj.anes.constants.CommonConstants;
 import com.xjj.anes.constants.MenuConstants;
+import com.xjj.anes.constants.SysConstants;
 import com.xjj.anes.entity.sys.Role;
 import com.xjj.anes.service.sys.RoleService;
 import com.xjj.anes.utils.MyUtil;
@@ -65,5 +67,18 @@ public class RoleController extends SysBaseController {
 	@PermissionChecking(id = MenuConstants.Sys.SYS_ROLE + "-getRoleMenus", name = "分配权限")
 	public ResultBean getRoleMenus(HttpServletRequest request, Role role) {
 		return roleService.getRoleMenus(role.getId());
+	}
+	
+	@RequestMapping(value = "/saveRoleMenus")
+	@PermissionChecking(id = MenuConstants.Sys.SYS_ROLE + "-saveRoleMenus", name = "保存权限")
+	public ResultBean saveRoleMenus(HttpServletRequest request, RoleVo roleVo)	{
+		ResultBean rb = null;
+		if (!SysConstants.DefaultRole.superAdmin.equals(roleVo.getId())) {
+			rb = roleService.saveRoleMenus(roleVo);
+		} else {
+			rb = new ResultBean(false);
+			rb.setMessage("不能修改超级管理员角色");
+		}
+		return rb;
 	}
 }

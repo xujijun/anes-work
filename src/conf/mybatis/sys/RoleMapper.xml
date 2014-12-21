@@ -85,6 +85,12 @@
 		DELETE FROM t_sys_role WHERE id=#{id}
 	</delete>
 
+	<!-- 删除一个角色的菜单关联表、权限关联表 -->
+	<delete id="deleteRelByRoleId" parameterType="string">
+		DELETE FROM t_sys_role_menu WHERE role_id=#{id};
+		DELETE FROM t_sys_role_permission WHERE role_id=#{id}
+	</delete>
+	
 	<select id="selectById" resultType="role">
 		SELECT
 		<include refid="selectColumns" />
@@ -147,12 +153,8 @@
 		)
 	</insert>
 	
-	
-	
-	
-	<!-- =======================有用分割线======================= -->
-		
-	<select id="getSystemMenus" parameterType="map" resultType="hashmap">
+	<!-- 获取所有的菜单和权限 -->
+	<select id="getSystemMenus" resultType="hashmap">
 		SELECT DISTINCT A.ID as "id", A.NAME as "name", A.PARENT_ID as "pid", 'true' as "isParent" 
     	FROM T_SYS_MENU A 
     	JOIN T_SYS_ROLE_MENU B on(A.ID=B.MENU_ID) 
@@ -163,6 +165,10 @@
     	JOIN T_SYS_ROLE_PERMISSION B on(A.ID=B.PERMISSION_ID)
     	JOIN T_SYS_ROLE C ON(C.ID=B.ROLE_ID) 
 	</select>
+	
+	<!-- =======================有用分割线======================= -->
+		
+
 	
 	<!-- 根据登录用户ID获取该用户可操作权限 -->
 	<select id="getAllMenuPermission" resultType="hashmap">

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>分配权限</title>
+<link href="../resources/style/page.form.css" rel="stylesheet" />
+</head>
+<body>
+	<div class="middle-main">
+		<div class="msg"></div>
+		<div class="listtab">
+			<form id="perminssionForm">
+				<input type="hidden" id="userId">
+				<div class="form-blog">
+					<div>
+						<div class="row">
+							<label class="labeltext xing" style="width: 93px;">角色名：</label><label id="cname"></label>
+							<div class='fn-clear'></div>
+						</div>
+						<div class="row">
+							<label class="labeltext xing" style="width: 93px;">选择菜单权限： </label>
+							<div class='roles-panel fn-left' style="height: 280px; overflow: auto;">
+								<div id="roles">
+									<ul id="treeMenu" class="ztree"></ul>
+								</div>
+							</div>
+							<div class='fn-clear'></div>
+						</div>
+					</div>
+					<div class="form-save">
+						<span class="but">
+							<button type="button" id='saveData' permissionId="sys-role-saveRoleMenus" >
+								<div class="but-left"></div>
+								<div class="but-center">保存</div>
+								<div class="but-right"></div>
+							</button>
+						</span> <span class="but">
+							<button type="button" class="but-close"  permissionId="sys-role-saveRoleMenus">
+								<div class="but-left"></div>
+								<div class="but-center">取消</div>
+								<div class="but-right"></div>
+							</button>
+						</span>
+						<!--- <a href="#" class="back">返回</a>-->
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			//取参数值
+			$("#saveData").focus();
+			var config = {
+				check : {
+					enable : true,
+					chkboxType : {
+						"Y" : "ps",
+						"N" : "ps"
+					}
+				},
+				data : {
+					simpleData : {
+						enable : true,
+						idKey : "id",
+						pIdKey : "pid",
+						rootPId : ""
+					}
+				}
+			};
+			var _location_url = $("#parm_val").val();
+			var id = getUrlParam("id", _location_url);
+			if (id === "super_admin") {
+				$(".but").hide();
+			}
+			
+			var param = "id=" + id;
+			if (id) {
+				$.post(getContextPath() + "/api/sys/role/getRoleMenus", param, function(resultBean, status, xhRequest) {
+					if (!handleAjaxRequest(resultBean, status, xhRequest))
+						return;
+					if (resultBean.success) {
+						$("#cname").html(resultBean.data.name);
+						initTreeMenu(resultBean.data);
+					} else {
+						_message("加载菜单失败!");
+					}
+					;
+				}, 'json');
+			}
+			
+			$("#saveData").click(function() {
+				var treeObj = $.fn.zTree.getZTreeObj("treeMenu");
+				var nodes = treeObj.getCheckedNodes(true);
+				var params = "";
+				for (var i = 0; i < nodes.length; i++) {
+					if (nodes[i].id) {
+						if (nodes[i].isParent || nodes[i].menu) {
+							params += "menuIds=" + nodes[i].id + "&";
+						} else {
+							params += "permissionIds=" + nodes[i].id + "&";
+						}
+					}
+				}
+				params += "id=" + id;
+				$.post(getContextPath() + "/api/sys/role/saveRoleMenus", params, function(resultBean, status, xhRequest) {
+					if (!handleAjaxRequest(resultBean, status, xhRequest))
+						return;
+					if (resultBean.success) {
+						_showMessage("保存成功", "success", 2000);
+					} else {
+						_showMessage("保存失败:" + resultBean.message);
+					}
+				}, 'json');
+			});
+			
+			function initTreeMenu(data) {
+				var allMenus = data.allMenus;
+				var rolePermissions = data.rolePermissions;
+				var roleMenus = data.roleMenus;
+				var flag = true;
+				for (var i = 0; i < allMenus.length; i++) {
+					//初始化已有的权限
+					for (var j = 0; j < rolePermissions.length; j++) {
+						if (allMenus[i].id == rolePermissions[j]) {
+							allMenus[i].checked = true;
+						}
+					}
+					//初妈化已有的菜单
+					for (var j = 0; j < roleMenus.length; j++) {
+						if (allMenus[i].id == roleMenus[j]) {
+							allMenus[i].checked = true;
+						}
+					}
+					//判断是否是叶子,如果有子类就不是叶子
+					for (var j = 0; j < allMenus.length; j++) {
+						if (allMenus[i].id == allMenus[j].parentId) {
+							flag = false;
+						}
+					}
+					//如果是菜单又没有子类的话，把菜单变成叶子
+					if (flag && allMenus[i].isParent == "true") {
+						allMenus[i].isParent = "false";
+						allMenus[i].menu = true;
+					}
+					/* if (window.top.getLoginUser().userAccount && 'sys' === allMenus[i].id) {
+						allMenus[i].name = "用户管理";
+					} */
+					flag = true;
+				}
+				$.fn.zTree.init($("#treeMenu"), config, data.allMenus);
+			}
+			checkPermission();
+		});
+	</script>
+</body>
+</html>
