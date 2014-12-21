@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xjj.anes.dao.anes.WorkDao">
+
+	<sql id="selectColumns">
+		A.ID,
+		A.operation_dt AS operationDt,
+		A.department,
+		A.admission_no AS admissionNo,
+		A.patient_name AS patientName,
+		A.patient_age AS patientAge,
+		A.operation_name AS operationName ,
+		A.anes_method AS anesMethod,
+		A.anesthetist_id AS anesthetistId,
+		A.pump,
+		A.dezocine,
+		A.mepivacaine,
+		A.creator,
+		A.CREATE_DT as createDt,
+		A.UPDATER,
+		A.UPDATE_DT as updateDt,
+		B.name AS anesthetistName
+	</sql>
+	
+	<sql id="searchColumns">
+		A.ID,
+		A.operation_dt AS operationDt,
+		A.department,
+		A.admission_no AS admissionNo,
+		A.patient_name AS patientName,
+		A.patient_age AS patientAge,
+		A.operation_name AS operationName ,
+		A.anes_method AS anesMethod,
+		A.anesthetist_id AS anesthetistId,
+		A.pump,
+		A.dezocine,
+		A.mepivacaine,
+		A.creator,
+		A.CREATE_DT as createDt,
+		A.UPDATER,
+		A.UPDATE_DT as updateDt,
+		B.name AS anesthetistName
+	</sql>
+
+	<!-- 插入列名 -->
+	<sql id="insertColumns">
+		<trim suffix="" suffixOverrides=",">
+			<if test="id != null">ID,</if>
+			<if test="operationDt != null">operation_dt,</if>
+			<if test="department != null">department,</if>
+			<if test="admissionNo != null">admission_no,</if>
+			<if test="patientName != null">patient_name,</if>
+			<if test="patientAge != null">patient_age,</if>
+			<if test="operationName != null">operation_name,</if>
+			<if test="anesMethod != null">anes_method,</if>
+			<if test="anesthetistId != null">anesthetist_id,</if>
+			<if test="pump != null">pump,</if>
+			<if test="dezocine != null">dezocine,</if>
+			<if test="mepivacaine != null">mepivacaine,</if>
+			<if test="creator != null">creator,</if>
+			<if test="createDt != null">CREATE_DT</if>
+		</trim>
+	</sql>
+	<!-- 插入列值 -->
+	<sql id="insertValues">
+		<trim suffix="" suffixOverrides=",">
+			<if test="id != null">#{id},</if>
+			<if test="operationDt != null">#{operationDt},</if>
+			<if test="department != null">#{department},</if>
+			<if test="admissionNo != null">#{admissionNo},</if>
+			<if test="patientName != null">#{patientName},</if>
+			<if test="patientAge != null">#{patientAge},</if>
+			<if test="operationName != null">#{operationName},</if>
+			<if test="anesMethod != null">#{anesMethod},</if>
+			<if test="anesthetistId != null">#{anesthetistId},</if>
+			<if test="pump != null">#{pump},</if>
+			<if test="dezocine != null">#{dezocine},</if>
+			<if test="mepivacaine != null">#{mepivacaine},</if>
+			<if test="creator != null">#{creator},</if>
+			<if test="createDt != null">#{createDt}</if>
+		</trim>
+	</sql>
+
+	<sql id="updateColumns">
+		<set>
+			<if test="operationDt != null">operation_dt=#{operationDt},</if>
+			<if test="department != null">department=#{department},</if>
+			<if test="admissionNo != null">admission_no=#{admissionNo},</if>
+			<if test="patientName != null">patient_name=#{patientName},</if>
+			<if test="patientAge != null">patient_age=#{patientAge},</if>
+			<if test="operationName != null">operation_name=#{operationName},</if>
+			<if test="anesMethod != null">anes_method=#{anesMethod},</if>
+			<if test="anesthetistId != null">anesthetist_id=#{anesthetistId},</if>
+			<if test="pump != null">pump=#{pump},</if>
+			<if test="dezocine != null">sex=#{dezocine},</if>
+			<if test="mepivacaine != null">sex=#{mepivacaine},</if>
+			<if test="updater != null">UPDATER=#{updater},</if>
+			<if test="updateDt != null">UPDATE_DT=#{updateDt}</if>
+		</set>
+	</sql>
+	
+	<sql id="searchWhere">
+		<where>
+		<if test="entity.operationName != null and entity.operationName != '' "> AND (A.operationName LIKE CONCAT('%',REPLACE(REPLACE(TRIM(#{entity.operationName}), '%', '/%'), '_', '/_'), '%') ESCAPE '/' )</if>
+		<if test="entity.department != null and entity.department != ''">AND A.department=#{entity.department}</if>
+		</where>
+	</sql>
+	
+	<select id="search" parameterType="pagerEntity" resultType="work"> 
+		SELECT	<include refid="searchColumns" /> 
+		FROM t_anes_work A
+		LEFT JOIN t_anes_anesthetist B ON A.anesthetist_id=B.id
+		<include refid="searchWhere" /> ORDER BY A.CREATE_DT DESC 
+		 <if test="needPage == true">
+		 	limit #{offset}, #{pageSize}
+		 </if>
+	</select>
+	
+	<select id="count" parameterType="pagerEntity" resultType="long">
+		SELECT count(0) FROM t_anes_work A 
+		<include refid="searchWhere" />
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO t_anes_work(
+		<include refid="insertColumns" />
+		)
+		VALUES(
+		<include refid="insertValues" />
+		)
+	</insert>
+	
+	<update id="update">
+		<if test="id != null">
+			UPDATE t_anes_work
+			<include refid="updateColumns" />
+			WHERE ID=#{id}
+		</if>
+	</update>
+	
+	<update id="delete">
+		 DELETE FROM t_anes_work WHERE ID=#{id}
+	</update>
+	
+	<select id="selectById" parameterType="string" resultType="work">
+		SELECT
+		<include refid="selectColumns" />
+		FROM t_anes_work A 
+		LEFT JOIN t_anes_anesthetist B ON A.anesthetist_id=B.id
+		WHERE A.ID=#{id} 
+	</select>
+	
+	<select id="countByAnesthetistId" resultType="long"> 
+		SELECT	count(0)
+		FROM t_anes_work A
+		WHERE A.anesthetist_id=#{anesthetistId} 
+	</select>
+	
+</mapper>

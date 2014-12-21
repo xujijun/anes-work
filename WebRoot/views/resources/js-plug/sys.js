@@ -116,7 +116,7 @@ function appendTrToTBody(rowNo, tBody, data, cls)
  */
 function fillSelect(select, optMap, title){
 	//var select = $("#"+selectId);
-	
+	//alert(title);
 	//删除已经存在的options
 	//for(var i=select.options.length;i>=0;i--) select.options.remove(i);
 	select.empty();

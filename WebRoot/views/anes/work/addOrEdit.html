@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="../resources/style/page.form.css" rel="stylesheet" />
+<link href="../resources/style/jqueryValidate/jquery.validate.css" rel="stylesheet" />
+<script src="../resources/js-plug/jquery.validate/jquery.validate.js"></script>
+<script src="../resources/js-plug/jquery.validate/jquery.validate.method.js"></script>
+<script src="../resources/js-plug/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+	<div class="middle-main">
+		<div class="msg"></div>
+		<div class="listtab">
+			<form action="" id="inputForm">
+				<input id="id" name="id" type="hidden">
+				<div class="form-blog">
+					<div>
+						<div class="row">
+							<label class="labeltext xing">手术时间：</label>
+							<!-- <input type="text" name="operationDt" id="operationDt" class="middleinput" /> -->
+	                        <input type="text" name="operationDt" id="operationDt" readonly="readonly" class="Wdate" _type='WdatePicker' onclick="WdatePicker({isShowClear:true,readOnly:true,maxDate:'%y-%M-#{%d}'});" />
+							<b style="color: red;">*</b>
+						</div>
+						
+						<div class="row">
+							<label class="labeltext">所属科室：</label> 
+							<select name="department" id="department" data="getLocalDict('DEPARTMENT')" blanklabel="科室">
+							</select>
+							<b style="color: red;">*</b>
+						</div>
+						<div class="row">
+							<label class="labeltext xing">住院号：</label>
+							<input type="text" name="admissionNo" id="admissionNo" class="middleinput" />
+							<b style="color: red;">*</b>
+						</div>
+						<div class="row">
+							<label class="labeltext">病人姓名：</label>
+							<input type="text" name="patientName" id="patientName" class="middleinput" />
+						</div>
+						<div class="row">
+							<label class="labeltext">病人年龄：</label>
+							<input type="text" name="patientAge" id="patientAge" class="middleinput" />
+						</div>
+						<div class="row">
+							<label class="labeltext">手术名称：</label>
+							<input type="text" name="operationName" id="operationName" class="middleinput" />
+						</div>
+						<div class="row">
+							<label class="labeltext xing">麻醉方式：</label> 
+							<select name="anesMethod" id="anesMethod" data="getLocalDict('ANES_METHOD')" blanklabel="麻醉方式">
+							</select>
+							<b style="color: red;">*</b>
+						</div>
+						<div class="row">
+							<label class="labeltext xing">麻醉医生：</label> 
+							<select name="anesthetistId" id="anesthetistId">
+							</select>
+							<b style="color: red;">*</b>
+						</div>
+						<div class="row">
+							<label class="labeltext">术后止痛泵：</label>
+							<input type="text" name="pump" id="pump" class="middleinput" />
+							<b style="color: red;">*</b>
+						</div>
+						<div class="row">
+							<label class="labeltext">地佐辛：</label>
+							<input type="text" name="dezocine" id="dezocine" class="middleinput" />
+							<b style="color: red;">*</b>
+						</div>						
+						<div class="row">
+							<label class="labeltext">甲哌卡因：</label>
+							<input type="text" name="mepivacaine" id="mepivacaine" class="middleinput" />
+							<b style="color: red;">*</b>
+						</div>
+								
+						<div class="form-save">
+							<span class="but" style="width: 85px;">
+								<button type="submit" id='saveButton' style="width: 80px;">
+									<div class="but-left"></div>
+									<div class="but-center">保存</div>
+									<div class="but-right"></div>
+								</button>
+							</span> <span class="but" style="width: 85px;">
+								<button type="button" class="but-close" style="width: 80px;">
+									<div class="but-left"></div>
+									<div class="but-center">取消</div>
+									<div class="but-right"></div>
+								</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var id = "";
+		$(document).ready(function() {
+			var _location_url = $("#parm_val").val();
+			id = getUrlParam("id", _location_url);
+			$("#name").focus();
+			$("#inputForm").validate({
+				rules : {
+					admissionNo : {
+						"required" : true,
+						"maxlength" : 10
+					},
+					operationDt: {
+						"required" : true
+					}
+				},
+				submitHandler : function(form) {
+					$("#saveButton").attr("disabled", true);
+					if($("#saveButton"))
+					var url = getContextPath() + "/api/anes/work/insert";
+					if(!!id){
+						url = getContextPath() + "/api/anes/work/update";
+					}
+					
+					$.post(url, $("#inputForm").serialize(), function(resultBean, status, xhRequest) {
+						if (!handleAjaxRequest(resultBean, status, xhRequest))
+							return;
+						if (resultBean.success) {
+							_showMessage("保存成功", "success", 2000);
+						} else {
+							_showMessage("保存失败");
+							$("#saveButton").attr("disabled", false);
+						}
+					}, 'json');
+				}
+			});
+			initXytItem();
+			loadAnesthetistList();
+		});
+		
+		function loadAnesthetistList(){
+			reqUrl=getContextPath() + "/api/anes/anesthetist/selectAllValid";
+			$.ajax({type:"GET",dataType:"json",url:reqUrl,async:false,success:function(resultBean, status, xhRequest) {
+					if(!handleAjaxRequest(resultBean, status,xhRequest)){return;}
+					
+					fillSelect($("#anesthetistId"), resultBean.data, "医生选择");
+					loadWork(id);
+				}
+			});
+		}
+		
+		function loadWork(id){
+			if(!!id){
+				$.post(getContextPath() + "/api/anes/work/selectById", "id=" + id, function(resultBean, status, xhRequest) {
+					if (!handleAjaxRequest(resultBean, status, xhRequest))
+						return;
+					if (resultBean.success) {
+						$("#id").val(id);
+						$("#operationDt").val(resultBean.data.operationDt);
+						$("#department").val(resultBean.data.department);
+						$("#admissionNo").val(resultBean.data.admissionNo);
+						$("#patientName").val(resultBean.data.patientName);
+						$("#patientAge").val(resultBean.data.patientAge);
+						$("#operationName").val(resultBean.data.operationName);
+						$("#anesMethod").val(resultBean.data.anesMethod);
+						$("#anesthetistId").val(resultBean.data.anesthetistId);
+						$("#pump").val(resultBean.data.pump);
+						$("#dezocine").val(resultBean.data.dezocine);
+						$("#mepivacaine").val(resultBean.data.mepivacaine);
+					} else {
+						_message("无法获取工作量信息");
+					}
+				}, 'json');
+			}else{
+				//$("#status").val("ON");
+			}
+		}
+	</script>
+</body>
+</html>

@@ -18,6 +18,9 @@ public class DictConstants
 		public final static String STATUS = "STATUS";// 状态 
 		public final static String USER_STATUS = "USER_STATUS";// 用户状态 
 		public final static String SEX = "SEX";//性别
+		
+		public final static String DEPARTMENT = "DEPARTMENT";//性别
+		public final static String ANES_METHOD = "ANES_METHOD";//性别
 	}
 	
 	

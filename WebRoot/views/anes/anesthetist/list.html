@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="../../resources/style/page.public.css" rel="stylesheet" />
+<link href="../../resources/style/page.table.css" rel="stylesheet" />
+<link href="../../resources/style/sys.css" rel="stylesheet" />
+<link href="../../resources/xyt-pager/style.css" rel="stylesheet" />
+<script src="../../resources/js-plug/jquery/jquery-1.9.1.js"></script>
+<script src="../../resources/xyt-pager/pager.js"></script>
+<script src="../../resources/js-plug/sys.js"></script>
+<!-- 树型选择器样式 -->
+<link href="../../resources/xyt-select/style.css" rel="stylesheet" />
+<!-- 树型选择器 -->
+<!-- <script src="../../resources/js-plug/jquery.jstree.js"></script>
+<script src="../../resources/xyt-select/select.js"></script> -->
+<style type="text/css">
+.table-group input,.table-group select {
+	color: gray;
+}
+</style>
+</head>
+<body style="overflow-y: hidden; overflow-x: hidden;">
+	<div class="divCover"></div>
+	<form id="userSearchForm">
+		<!-- BEGIN 内容区-->
+		<div class="main-big">
+			<div class="main-b-box">
+				<!-- BEGIN table组件-->
+				<div class="main-b-contentbox">
+					<div class="contentbox-title-nav">
+						<div class="navigations">
+							<ul>
+								<li><a href="#">首页</a> <span>&gt;</span></li>
+								<li><a href="#" id="systemMenuName">工作量管理</a> <span>&gt;</span></li>
+								<li><a href="#">医生管理</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="contentbox-body">
+						<div class="table-query">
+							<div class="table-group query-inline-num5" permissionId="anes-anesthetist-search" >
+								<label></label> 
+								<input type="text" name="name" id="searchName" placeholder='姓名' value=""/> <label></label>
+
+								<select name="status" data="getLocalDict('STATUS')" blanklabel="状态选择">
+								</select>
+
+
+								<button type="button" id='but-search' permissionId="anes-anesthetist-search" class="perm"
+									onclick="loadUser()">查询</button>
+								<button type="button" class="perm" id="resetButton">重置</button>
+							</div>
+						</div>
+						<div class="table-toolbar">
+							<div class="btn-group">
+								<button type="button" id="addUser" class="btn green perm" permissionId="anes-anesthetist-insert">
+									新增医生 <i class="icon-plus"></i>
+								</button>
+							</div>
+						</div>
+						<div class="table-scrollable">
+							<div class="table-wrapper">
+								<table class="table table-striped table-hover table-bordered">
+									<thead>
+										<tr>
+											<th>姓名</th>
+											<th>性别</th>
+											<th>状态</th>
+											<th>创建者</th>
+											<th>创建时间</th>
+											<th class="operate4" style="width: 220px;">操作</th>
+										</tr>
+									</thead>
+									<tbody id="loadUserContent">
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="page-scrollable">
+							<div class="table-pages">
+								<div id="xyt-pager"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			createPager("loadUser", "xyt-pager");
+			$("#addUser").click(function() {
+				var temp_url = getContextPath() + "/views/anes/anesthetist/addOrEdit.html";
+				_Dialog('新增医生', temp_url, loadUser);
+			});
+			loadUser();
+
+			$(".table-query input").addClass("gr_class");
+			$(".table-query input").focus(function() {
+				$(this).removeClass("gr_class");
+				$(this).css({
+					"color" : "black"
+				});
+			});
+			$(".table-query input").blur(function() {
+				if ('' == $(this).val() || $(this).val() == $(this).attr('placeholder')) {
+					$(this).removeClass("bl_class");
+					$(this).css({
+						"color" : "gray"
+					});
+				} else {
+					$(this).removeClass("gr_class");
+					$(this).css({
+						"color" : "black"
+					});
+				}
+			});
+			$("#userSearchForm").on("keyup", function(e) {
+				if (e.which == 13) {
+					loadUser();
+				}
+			});
+		});
+		
+		function loadUser() {
+			topLoading();
+			$.post(getContextPath() + "/api/anes/anesthetist/search", $("#userSearchForm").serialize(), function(resultBean, status, request) {
+				topLoaded();
+				if (!handleAjaxRequest(resultBean, status, request)) {
+					return;
+				}
+				$("#loadUserContent").html("");
+				var beanList = resultBean.data.beanList;
+				var bean = "";
+				var s = beanList.length;
+				for (var i = 0; i < s; i++) {
+					bean = beanList[i];
+					var opt = "";
+					if(bean.id != "administrator"){ //不是超级管理员角色
+						opt += "<a href='javascript:void(0);' class='editAnesthetist perm' permissionId='anes-anesthetist-update' data='" + bean.id + "'>修改</a>";
+						opt += "<a href='javascript:void(0);' class='delAnesthetist perm' permissionId='anes-anesthetist-delete' data='" + bean.id + "'>删除</a>";
+					}
+					appendTrToTBody(i, "loadUserContent", new Array(bean.name, bean.sexName, bean.statusName, bean.creator, bean.createDt, opt));
+				}
+
+				$(".editAnesthetist").click(function() {
+					var id = $(this).attr("data");
+					var temp_url = getContextPath() + "/views/anes/anesthetist/addOrEdit.html?id=" + id;
+					_Dialog('修改用户', temp_url, loadUser);
+				});
+				
+				$(".delAnesthetist").click(function() {
+					var id = $(this).attr("data");
+					_confirmDialog("亲，你确定要删除吗？删除后将无法恢复，请慎重！", "删除温馨提示", function(e) {
+						if (e) {
+							$.post(getContextPath() + "/api/anes/anesthetist/delete", "id=" + id, function(resultBean, status, xhRequest) {
+								if (!handleAjaxRequest(resultBean, status, xhRequest))
+									return;
+								if (resultBean.success) {
+									_message("删除成功", loadUser);
+									loadUser();
+								} else {
+									_message("删除失败");
+								}
+							}, 'json');
+						}
+					});
+				});
+				
+				checkPermission();
+				setAjaxPagerValues("loadUser", resultBean.data.dataSize, resultBean.data.pageSize, resultBean.data.currentPage);
+			}, 'json');
+		}
+		
+		initXytItem();
+		
+		$("#resetButton").click(function() {
+			$("#userSearchForm")[0].reset();
+			loadUser();
+		});
+	</script>
+</body>
+</html>

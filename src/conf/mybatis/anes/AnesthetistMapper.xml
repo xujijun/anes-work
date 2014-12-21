@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xjj.anes.dao.anes.AnesthetistDao">
+
+	<sql id="selectColumns">
+		A.ID,
+		A.NAME,
+		A.sex,
+		A.STATUS,
+		A.creator,
+		A.CREATE_DT as createDt,
+		A.UPDATER,
+		A.UPDATE_DT as updateDt
+	</sql>
+	
+	<sql id="searchColumns">
+		A.ID,
+		A.NAME,
+		A.sex,
+		A.STATUS,
+		A.creator,
+		A.CREATE_DT as createDt,
+		A.UPDATER,
+		A.UPDATE_DT as updateDt
+	</sql>
+	
+	<!-- 插入列名 -->
+	<sql id="insertColumns">
+		<trim suffix="" suffixOverrides=",">
+			<if test="id != null">ID,</if>
+			<if test="name != null">NAME,</if>
+			<if test="status != null">STATUS,</if>
+			<if test="sex != null">sex,</if>
+			<if test="creator != null">creator,</if>
+			<if test="createDt != null">CREATE_DT</if>
+		</trim>
+	</sql>
+	<!-- 插入列值 -->
+	<sql id="insertValues">
+		<trim suffix="" suffixOverrides=",">
+			<if test="id != null">#{id},</if>
+			<if test="name != null">#{name},</if>
+			<if test="status != null">#{status},</if>
+			<if test="sex != null">#{sex},</if>
+			<if test="creator != null">#{creator},</if>
+			<if test="createDt != null">#{createDt}</if>
+		</trim>
+	</sql>
+	<sql id="updateColumns">
+		<set>
+			<if test="name != null">NAME=#{name},</if>
+			<if test="status != null">STATUS=#{status},</if>
+			<if test="sex != null">sex=#{sex},</if>
+			<if test="updater != null">UPDATER=#{updater},</if>
+			<if test="updateDt != null">UPDATE_DT=#{updateDt}</if>
+		</set>
+	</sql>
+	
+	<sql id="searchWhere">
+		<where>
+		<if test="entity.name != null and entity.name != '' "> AND (A.NAME LIKE CONCAT('%',REPLACE(REPLACE(TRIM(#{entity.name}), '%', '/%'), '_', '/_'), '%') ESCAPE '/' )</if>
+		<if test="entity.status != null and entity.status != ''">AND A.STATUS=#{entity.status}</if>
+		</where>
+	</sql>
+	
+	<select id="search" parameterType="pagerEntity" resultType="anesthetist"> 
+		SELECT	<include refid="searchColumns" /> 
+		FROM t_anes_anesthetist A
+		<include refid="searchWhere" /> ORDER BY A.CREATE_DT DESC 
+		 <if test="needPage == true">
+		 	limit #{offset}, #{pageSize}
+		 </if>
+	</select>
+	
+	<select id="count" parameterType="pagerEntity" resultType="long">
+		SELECT count(0) FROM t_anes_anesthetist A 
+		<include refid="searchWhere" />
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO t_anes_anesthetist(
+		<include refid="insertColumns" />
+		)
+		VALUES(
+		<include refid="insertValues" />
+		)
+	</insert>
+	
+	<update id="update">
+		<if test="id != null">
+			UPDATE t_anes_anesthetist
+			<include refid="updateColumns" />
+			WHERE ID=#{id}
+		</if>
+	</update>
+	
+	<update id="delete">
+		 DELETE FROM t_anes_anesthetist WHERE ID=#{id}
+	</update>
+	
+	<select id="selectById" parameterType="string" resultType="anesthetist">
+		SELECT
+		<include refid="selectColumns" />
+		FROM t_anes_anesthetist A WHERE A.ID=#{id} 
+	</select>
+	
+	<select id="selectAllValid" resultType="anesthetist"> 
+		SELECT	A.id, A.name
+		FROM t_anes_anesthetist A
+		WHERE A.status='ON' ORDER BY A.name 
+	</select>
+</mapper>

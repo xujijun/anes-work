@@ -5,7 +5,10 @@ var clsCodes = {"clsCodes" :
 		["BOOL",
 		 "STATUS",
 		 "USER_TYPE",
-		 "USER_STATUS"
+		 "USER_STATUS",
+		 "SEX",
+		 "DEPARTMENT",
+		 "ANES_METHOD"
      ]
 };
 

@@ -8,9 +8,6 @@ import com.xjj.anes.mvc.controller.BaseController;
 
 /**
  * 系统管理基类
- * 
- * @author 钟伟雄
- * 
  */
 @Controller
 @SysMenu(id = MenuConstants.SYS, name = "系统管理", parent = "", orderNo = 1, uri = "")
