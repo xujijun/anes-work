@@ -107,7 +107,6 @@ function appendTrToTBody(rowNo, tBody, data, cls)
 	$("#"+tBody).html($("#"+tBody).html()+html);
 }
 
-
 /**
  * 填充select控件
  * @param select：控件对象

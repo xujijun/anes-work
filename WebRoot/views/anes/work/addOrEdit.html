@@ -7,7 +7,7 @@
 <link href="../resources/style/jqueryValidate/jquery.validate.css" rel="stylesheet" />
 <script src="../resources/js-plug/jquery.validate/jquery.validate.js"></script>
 <script src="../resources/js-plug/jquery.validate/jquery.validate.method.js"></script>
-<script src="../resources/js-plug/My97DatePicker/WdatePicker.js"></script>
+
 </head>
 <body>
 	<div class="middle-main">
@@ -20,13 +20,13 @@
 						<div class="row">
 							<label class="labeltext xing">手术时间：</label>
 							<!-- <input type="text" name="operationDt" id="operationDt" class="middleinput" /> -->
-	                        <input type="text" name="operationDt" id="operationDt" readonly="readonly" class="Wdate" _type='WdatePicker' onclick="WdatePicker({isShowClear:true,readOnly:true,maxDate:'%y-%M-#{%d}'});" />
+	                        <input type="text" name="operationDt" id="operationDt" readonly="readonly" class="Wdate middleinput" _type='WdatePicker' onclick="WdatePicker({isShowClear:true,readOnly:true,maxDate:'%y-%M-#{%d}'});" />
 							<b style="color: red;">*</b>
 						</div>
 						
 						<div class="row">
 							<label class="labeltext">所属科室：</label> 
-							<select name="department" id="department" data="getLocalDict('DEPARTMENT')" blanklabel="科室">
+							<select name="department" id="department" class="middleinput" data="getLocalDict('DEPARTMENT')" blanklabel="科室">
 							</select>
 							<b style="color: red;">*</b>
 						</div>
@@ -49,13 +49,13 @@
 						</div>
 						<div class="row">
 							<label class="labeltext xing">麻醉方式：</label> 
-							<select name="anesMethod" id="anesMethod" data="getLocalDict('ANES_METHOD')" blanklabel="麻醉方式">
+							<select name="anesMethod" id="anesMethod" class="middleinput" data="getLocalDict('ANES_METHOD')" blanklabel="麻醉方式">
 							</select>
 							<b style="color: red;">*</b>
 						</div>
 						<div class="row">
 							<label class="labeltext xing">麻醉医生：</label> 
-							<select name="anesthetistId" id="anesthetistId">
+							<select name="anesthetistId" id="anesthetistId" class="middleinput">
 							</select>
 							<b style="color: red;">*</b>
 						</div>
@@ -103,13 +103,44 @@
 			$("#name").focus();
 			$("#inputForm").validate({
 				rules : {
-					admissionNo : {
-						"required" : true,
-						"maxlength" : 10
-					},
 					operationDt: {
-						"required" : true
-					}
+						required : true,
+					},
+					department: {
+						required : true,
+					},
+					admissionNo : {
+						required : true,
+						maxlength : 10,
+					},
+					patientName : {
+						maxlength : 20,
+					},
+					patientAge : {
+						digits : true,
+						range : [0,150],
+					},
+					operationName : {
+						maxlength : 20,
+					},
+					anesMethod : {
+						required : true,
+					},
+					anesthetistId : {
+						required : true,
+					},
+					pump : {
+						digits : true,
+						range : [0,1],
+					},
+					dezocine : {
+						digits : true,
+						range : [0,10],
+					},
+					mepivacaine : {
+						digits : true,
+						range : [0,10],
+					}					
 				},
 				submitHandler : function(form) {
 					$("#saveButton").attr("disabled", true);
@@ -169,7 +200,9 @@
 					}
 				}, 'json');
 			}else{
-				//$("#status").val("ON");
+				$("#pump").val(0);
+				$("#dezocine").val(0);
+				$("#mepivacaine").val(0);
 			}
 		}
 	</script>

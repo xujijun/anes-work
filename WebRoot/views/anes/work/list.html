@@ -10,6 +10,7 @@
 <script src="../../resources/js-plug/jquery/jquery-1.9.1.js"></script>
 <script src="../../resources/xyt-pager/pager.js"></script>
 <script src="../../resources/js-plug/sys.js"></script>
+<script src="../../resources/js-plug/My97DatePicker/WdatePicker.js"></script>
 <!-- 树型选择器样式 -->
 <link href="../../resources/xyt-select/style.css" rel="stylesheet" />
 <!-- 树型选择器 -->
@@ -41,10 +42,12 @@
 					<div class="contentbox-body">
 						<div class="table-query">
 							<div class="table-group query-inline-num5" permissionId="anes-work-search" >
-								<label></label> 
+								<input type="text" name="startDt" id="startDt" placeholder="时间（起）" readonly="readonly" class="Wdate middleinput" _type='WdatePicker' onclick="WdatePicker({isShowClear:true,readOnly:true,maxDate:'%y-%M-#{%d}'});" />
+								<input type="text" name="endDt" id="endDt" placeholder="时间（止）" readonly="readonly" class="Wdate middleinput" _type='WdatePicker' onclick="WdatePicker({isShowClear:true,readOnly:true,maxDate:'%y-%M-#{%d}'});" />
+								
 								<input type="text" name="operationName" placeholder='手术名称' value=""/> <label></label>
 
-								<select name="status" data="getLocalDict('DEPARTMENT')" blanklabel="所属科室">
+								<select name="department" data="getLocalDict('DEPARTMENT')" blanklabel="所属科室">
 								</select>
 
 
@@ -65,13 +68,18 @@
 								<table class="table table-striped table-hover table-bordered">
 									<thead>
 										<tr>
-											<th>手术时间</th>
-											<th>科室</th>
-											<th>医生</th>
-											<th>术后止痛泵</th>
-											<th>地佐辛</th>
-											<th>甲哌卡因</th>
-											<th class="operate4" style="width: 220px;">操作</th>
+											<th style="width:9%">手术时间</th>
+											<th style="width:8%">科室</th>
+											<th style="width:10%">住院号</th>
+											<th style="width:8%">病人姓名</th>
+											<th style="width:5%">病人年龄</th>
+											<th style="width:12%">手术名称</th>
+											<th style="width:10%">麻醉方式</th>
+											<th style="width:8%">麻醉医生</th>
+											<th style="width:5%">术后止痛泵</th>
+											<th style="width:5%">地佐辛</th>
+											<th style="width:5%">甲哌卡因</th>
+											<th class="operate4" style="width: 100px;">操作</th>
 										</tr>
 									</thead>
 									<tbody id="loadRecordsContent">
@@ -143,7 +151,8 @@
 						opt += "<a href='javascript:void(0);' class='editWork perm' permissionId='anes-work-update' data='" + bean.id + "'>修改</a>";
 						opt += "<a href='javascript:void(0);' class='delWork perm' permissionId='anes-work-delete' data='" + bean.id + "'>删除</a>";
 					}
-					var content = new Array(bean.operationDt, bean.departmentName, bean.anesthetistName, bean.pump, bean.dezocine, bean.mepivacaine, opt);
+					var content = new Array(bean.operationDt, bean.departmentName, bean.admissionNo, bean.patientName, bean.patientAge, bean.operationName,
+							bean.anesMethodName, bean.anesthetistName, bean.pump, bean.dezocine, bean.mepivacaine, opt);
 					appendTrToTBody(i, "loadRecordsContent", content);
 				}
 

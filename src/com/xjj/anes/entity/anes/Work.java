@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.xjj.anes.entity.sys.CoreEntity;
-import com.xjj.anes.serializer.DateTimeSerializer;
+import com.xjj.anes.serializer.DateSerializer;
 import com.xjj.anes.utils.CacheUtil;
 
 public class Work extends CoreEntity {
@@ -12,7 +12,7 @@ public class Work extends CoreEntity {
 	private String department;
 	private String admissionNo;
 	private String patientName;
-	private int patientAge;
+	private String patientAge;
 	private String operationName;
 	private String anesMethod;
 	private String anesthetistId;
@@ -45,7 +45,7 @@ public class Work extends CoreEntity {
 		return CacheUtil.getAnesMethodName(anesMethod);
 	}
 	
-	@JsonSerialize(using = DateTimeSerializer.class)
+	@JsonSerialize(using = DateSerializer.class)
 	public Date getOperationDt() {
 		return operationDt;
 	}
@@ -70,10 +70,10 @@ public class Work extends CoreEntity {
 	public void setPatientName(String patientName) {
 		this.patientName = patientName;
 	}
-	public int getPatientAge() {
+	public String getPatientAge() {
 		return patientAge;
 	}
-	public void setPatientAge(int patientAge) {
+	public void setPatientAge(String patientAge) {
 		this.patientAge = patientAge;
 	}
 	public String getOperationName() {
