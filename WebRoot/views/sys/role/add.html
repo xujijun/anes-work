@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="../resources/style/page.form.css" rel="stylesheet" />
+<link href="../resources/style/jqueryValidate/jquery.validate.css" rel="stylesheet" />
+<script src="../resources/js-plug/jquery.validate/jquery.validate.js"></script>
+<script src="../resources/js-plug/jquery.validate/jquery.validate.method.js"></script>
+</head>
+<body>
+	<div class="middle-main">
+		<div class="msg"></div>
+		<div class="listtab">
+			<form action="" id="inputForm">
+				<input id="id" name="id" type="hidden">
+				<div class="form-blog">
+					<div>
+						<div class="row">
+							<label class="labeltext xing">角色名：</label> <input type="text" name="name" id="name"
+								maxlength="25" class="middleinput" /><b style="color: red;">*</b>
+						</div>
+						<div class="row">
+							<label class="labeltext">备注：</label>
+							<textarea class="middletextarea" rows="5" id="remark" name='remark' maxlength="50"
+								style="font-size: 13px"></textarea>
+							<label class="textarea-tip">(还可以输入 <var style="color: #C00">50</var>个字符)
+							</label>
+						</div>
+						<div class="form-save">
+							<span class="but" style="width: 85px;">
+								<button type="submit" id='saveButton' style="width: 80px;">
+									<div class="but-left"></div>
+									<div class="but-center">保存</div>
+									<div class="but-right"></div>
+								</button>
+							</span> <span class="but" style="width: 85px;">
+								<button type="button" class="but-close" style="width: 80px;">
+									<div class="but-left"></div>
+									<div class="but-center">取消</div>
+									<div class="but-right"></div>
+								</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#name").focus();
+			$("#inputForm").validate({
+				rules : {
+					name : {
+						"required" : true,
+						"maxlength" : 10
+					},
+					remark : {
+						"required" : false,
+						"maxlength" : 50
+					}
+				},
+				submitHandler : function(form) {
+					$("#saveButton").attr("disabled", true);
+					$.post(getContextPath() + "/api/sys/role/insert", $("#inputForm").serialize(), function(resultBean, status, xhRequest) {
+						topLoaded();
+						if (!handleAjaxRequest(resultBean, status, xhRequest))
+							return;
+						if (resultBean.success) {
+							_showMessage("保存成功", "success", 2000);
+						} else {
+							_showMessage("保存失败");
+							$("#saveButton").attr("disabled", false);
+						}
+					}, 'json');
+				}
+			});
+			countWord();
+		});
+	</script>
+</body>
+</html>

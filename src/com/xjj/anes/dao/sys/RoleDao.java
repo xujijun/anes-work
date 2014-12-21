@@ -35,4 +35,9 @@ public interface RoleDao {
 	public long count(PagerEntity pagerEntity);
 
 	public List<Role> search(PagerEntity pagerEntity);
+
+	// 删除角色及其关联表
+	public int deleteRoleAndRel(String id);
+
+	public int update(Role role);
 }

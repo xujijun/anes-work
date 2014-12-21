@@ -328,6 +328,7 @@ public class SysServiceImpl implements SysService {
 				Role role = new Role();
 				role.setId(id);
 				role.setName(defaultRoleMap.get(id));
+				role.setRemark(defaultRoleMap.get(id));
 				role.setStatus(CommonConstants.Status.ACTIVE);
 				role.setCreator(creator);
 				role.setCreateDt(dtNow);

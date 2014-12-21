@@ -11,4 +11,14 @@ public interface RoleService {
 
 	ResultBean search(Pager<Role> pager, Role role);
 
+	ResultBean insert(Role role);
+
+	ResultBean update(Role role);
+
+	ResultBean delete(String id);
+
+	ResultBean getRoleMenus(String id);
+
+	ResultBean selectById(String id);
+
 }

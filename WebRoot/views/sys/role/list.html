@@ -73,16 +73,20 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			createPager("loadList", "xyt-pager");
-			loginUserType = window.top.getLoginUser().user.userType;
+			
+			/* loginUserType = window.top.getLoginUser().user.userType;
 			$("#roleType").val(loginUserType);
 			if (window.top.getLoginUser().userAccount === true) {
 				$("#systemMenuName").text("用户管理");
-			}
+			} */
+			
 			$("#addRole").click(function() {
 				var temp_url = getContextPath() + "/views/sys/role/add.html";
 				_Dialog('新增角色', temp_url, loadList);
 			});
+			
 			loadList();
+			
 			//搜索框初始为灰
 			$(".table-group select").css({
 				"color" : "gray"
@@ -105,6 +109,7 @@
 				loadList();
 			});
 		});
+		
 		function loadList() {
 			topLoading();
 			$.post(getContextPath() + "/api/sys/role/search", $("#roleForm").serialize(), function(resultBean, status, request) {
@@ -118,22 +123,32 @@
 				var s = beanList.length;
 				for (var i = 0; i < s; i++) {
 					bean = beanList[i];
-					appendTrToTBody(i, "dataContent", new Array(bean.name, bean.statusName, bean.remark, "<a href='javascript:void(0);' data=" + bean.id
-						+ "  class='permission' permissionId='sys-role-getRoleMenus' >分配权限</a><a href='javascript:void(0);' class='editData' data='"
-						+ bean.id + "' permissionId='sys-role-update' >修改</a><a href='javascript:void(0);' class='delData' data='" + bean.id + "' permissionId='sys-role-delete' >删除</a>"));
+					var opt = "";
+					if(bean.id != "super_admin"){ //不是超级管理员
+						opt += "<a href='javascript:void(0);' data=" + bean.id + "  class='permission' permissionId='sys-role-getRoleMenus' >分配权限</a>";
+						
+						if(bean.id != "system_admin"){ //不是系统管理员
+							opt += "<a href='javascript:void(0);' class='editData' data='" + bean.id + "' permissionId='sys-role-update' >修改</a>";
+							opt += "<a href='javascript:void(0);' class='delData' data='" + bean.id + "' permissionId='sys-role-delete' >删除</a>";
+						}
+					}
+					appendTrToTBody(i, "dataContent", new Array(bean.name, bean.statusName, bean.remark, opt));
 				}
+
+				setAjaxPagerValues("loadList", resultBean.data.dataSize, resultBean.data.pageSize, resultBean.data.currentPage);
 
 				$(".permission").click(function() {
 					var id = $(this).attr("data");
 					var temp_url = getContextPath() + "/views/sys/role/permission.html?id=" + id;
 					_Dialog('分配权限', temp_url, loadList);
 				});
+				
 				$(".editData").click(function() {
 					var id = $(this).attr("data");
 					var temp_url = getContextPath() + "/views/sys/role/edit.html?id=" + id;
 					_Dialog('修改角色', temp_url, loadList);
 				});
-				setAjaxPagerValues("loadList", resultBean.data.dataSize, resultBean.data.pageSize, resultBean.data.currentPage);
+				
 				$(".delData").click(function() {
 					var id = $(this).attr("data");
 					_confirmDialog("亲，你确定要删除吗？", "删除温馨提示", function(e) {
@@ -147,7 +162,7 @@
 								} else {
 									_message('删除失败');
 								}
-							}, 'json')
+							}, 'json');
 						}
 					});
 				});

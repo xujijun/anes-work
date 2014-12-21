@@ -42,7 +42,7 @@ label.orgError {
 					<div class="row" id="userTypeDiv">
 						<label class="labeltext xing">用户类型：</label>
 						<div class="middleradio">
-							<select name="userType" id="userType" data="getLocalDict('USER_TYPE')" iswithblank="true" blanklabel="用户类型">
+							<select name="userType" id="userType" data="getLocalDict('USER_TYPE')" blanklabel="用户类型">
 							</select>
 							<b style="color: red;">*</b>
 						</div>
@@ -50,7 +50,8 @@ label.orgError {
 					<div class="row" id="roleDiv">
 						<label class="labeltext xing">所属角色：</label>
 						<div class="middleradio">
-							<select name="roleId" id="roleId" data="/api/authx/getRoleList" iswithblank="true" blanklabel="角色选择">
+							<!-- <select name="roleId" id="roleId" data="/api/authx/getRoleList" iswithblank="true" blanklabel="角色选择"> -->
+							<select name="roleId" id="roleId">
 							</select>
 							<b style="color: red;">*</b>
 						</div>
@@ -103,6 +104,7 @@ label.orgError {
 		</div>
 	</div>
 	<script type="text/javascript">
+		var userId = "";
 		$(document).ready(function() {
 			//取参数值
 			$("#code").focus();
@@ -110,8 +112,7 @@ label.orgError {
 			$("#name").val("");
 			initXytItem();
 			var _location_url = $("#parm_val").val();
-			var id = getUrlParam("id", _location_url);
-			var param = "id=" + id;
+			userId = getUrlParam("id", _location_url);
 			var validateConfige = {
 				rules : {
 					name : {
@@ -141,7 +142,6 @@ label.orgError {
 							$("#password").val(encryptByMd5($("#password").val()));
 						}
 						$.post(getContextPath() + "/api/sys/user/update", $("#userForm").serialize(), function(resultBean, status, xhRequest) {
-							topLoaded();
 							if (!handleAjaxRequest(resultBean, status, xhRequest))
 								return;
 							if (resultBean.success) {
@@ -153,9 +153,25 @@ label.orgError {
 						}, 'json');
 				}
 			};
+			loadRoles();
+			$("#userForm").validate(validateConfige);
+		});
+		
+		function loadRoles(){
+			reqUrl=getContextPath() + "/api/authx/getRoleList";
+			$.ajax({type:"GET",dataType:"json",url:reqUrl,async:false,success:function(resultBean, status, xhRequest) {
+					if(!handleAjaxRequest(resultBean, status,xhRequest)){return;}
+					
+					fillSelect($("#roleId"), resultBean.data, "角色选择");
+					loadUser(userId);
+				}
+			});
+		}
+		
+		function loadUser(id){
 			if (id) {
-				$.post(getContextPath() + "/api/sys/user/select", param, function(resultBean, status, xhRequest) {
-					topLoaded();
+				//var param = "id=" + id;
+				$.post(getContextPath() + "/api/sys/user/select", {"id":id}, function(resultBean, status, xhRequest) {
 					if (!handleAjaxRequest(resultBean, status, xhRequest))
 						return;
 					if (resultBean.success) {
@@ -164,19 +180,17 @@ label.orgError {
 						$("#code").attr("disabled", true);
 						$("#name").val(resultBean.data.name);
 						$("#remark").val(resultBean.data.remark);
-						$("#textId").val(resultBean.data.regionName);
 						$("#userType").val(resultBean.data.userType);
 						$("#roleId").val(resultBean.data.roleId);
 						$("#status").val(resultBean.data.status);
-						$("#userType").change();
+						//$("#userType").change();
 						countWord();
 					} else {
 						_message("无法获取用户信息");
 					}
 				}, 'json');
 			}
-			$("#userForm").validate(validateConfige);
-		});
+		}
 	</script>
 </body>
 </html>

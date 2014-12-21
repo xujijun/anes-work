@@ -107,6 +107,40 @@ function appendTrToTBody(rowNo, tBody, data, cls)
 	$("#"+tBody).html($("#"+tBody).html()+html);
 }
 
+
+/**
+ * 填充select控件
+ * @param select：控件对象
+ * @param optMap：option Map（key-value对的集合）
+ * @param title：标题（value为空的第一行）
+ */
+function fillSelect(select, optMap, title){
+	//var select = $("#"+selectId);
+	
+	//删除已经存在的options
+	//for(var i=select.options.length;i>=0;i--) select.options.remove(i);
+	select.empty();
+	
+	//var opt=null;
+	if(!!title) { //如果需要title
+		/*opt=document.createElement('option');
+		select.options.add(opt);
+		opt.value="";
+		opt.innerHTML=title; */
+		
+		select.append("<option value=''>"+ title +"</option>"); 
+	}
+	for(var key in optMap)
+	{
+		/*opt=document.createElement('option');
+		select.options.add(opt);
+		opt.value=key;
+		opt.innerHTML=optMap[key]; 	*/
+		
+		select.append("<option value='"+ key +"'>"+ optMap[key] +"</option>"); 
+	}
+}
+
 /**
  * 根据clsCode获取前端字典缓存中的(code, name)列表
  * @param clsCode
@@ -122,12 +156,15 @@ function getLocalDict(clsCode){
 	return null;
 }
 
+/**
+ * 初始化有“data”属性的select控件
+ */
 function initSelectOptions()
 {
 	$("select").each(function()
 	{
-		var isWithBlank=false;
-		var reqUrl=null,select=null,opt=null;
+		//var isWithBlank=false;
+		var reqUrl=null,select=null;//,opt=null;
 		if($(this).attr("isWithBlank"))
 		{
 			isWithBlank=$(this).attr("isWithBlank").toLowerCase()=="true"?true:false;
@@ -135,7 +172,8 @@ function initSelectOptions()
 
 		if($(this).attr("data") && this.options.length==0)
 		{
-			select=this;
+			//select=this;
+			select=$(this);//转成JQuery对象
 
 			blankLabel=$(this).attr("blankLabel");
 			if(blankLabel==undefined)
@@ -149,7 +187,8 @@ function initSelectOptions()
 				//var clsCode = reqUrl.substr(reqUrl.lastIndexOf("clsCode=")+8).trim();
 				var dictMap = eval(reqUrl);
 				if(dictMap != null){
-					for(var i=select.options.length;i>=0;i--) select.options.remove(i);	
+					fillSelect(select, dictMap, blankLabel);
+					/*for(var i=select.options.length;i>=0;i--) select.options.remove(i);	
 					
 					if(isWithBlank)
 					{
@@ -164,12 +203,11 @@ function initSelectOptions()
 						select.options.add(opt);
 						opt.value=key;
 						opt.innerHTML=dictMap[key]; 	
-					}
-					return;
+					}*/
 				}else{
 					alert("未能获取数据字典！请按F5刷新页面或重新登录。");
-					return;
 				}
+				return;
 			}
 			
 			if(reqUrl.indexOf(getContextPath()+"/")==-1)
@@ -187,7 +225,9 @@ function initSelectOptions()
 				topLoaded();
 				if(!handleAjaxRequest(resultBean, status,xhRequest)){return;}
 				
-				for(var i=select.options.length;i>=0;i--) select.options.remove(i);	
+				fillSelect(select, resultBean.data, blankLabel);
+				
+				/*for(var i=select.options.length;i>=0;i--) select.options.remove(i);	
 				
 				if(isWithBlank)
 				{
@@ -203,7 +243,7 @@ function initSelectOptions()
 					select.options.add(opt);
 					opt.value=key;
 					opt.innerHTML=dataMap[key]; 	
-				}
+				}*/
 				
 			}});	
 		}

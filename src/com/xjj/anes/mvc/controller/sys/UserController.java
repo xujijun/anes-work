@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xjj.anes.annotation.PermissionChecking;
@@ -61,10 +60,9 @@ public class UserController extends SysBaseController {
 	@RequestMapping(value = "insert")
 	@PermissionChecking(id = MenuConstants.Sys.SYS_USER + "-insert", name = "新增")
 	public ResultBean insert(HttpServletRequest request, User user){
-		User creator = getLoginUser(request).getUser();
 		user.setId(MyUtil.generateUUID());
 		user.setCreateDt(new Date());
-		user.setCreator(creator.getName());
+		user.setCreator(getUserCode(request));
 		return userService.insert(user);
 	}
 	
@@ -96,9 +94,8 @@ public class UserController extends SysBaseController {
 	@RequestMapping(value = "update", method = RequestMethod.POST)
 	@PermissionChecking(id = MenuConstants.Sys.SYS_USER + "-update", name = "修改")
 	public ResultBean update(HttpServletRequest request, User user)	{
-		String updater = getUserName(request);
 		user.setUpdateDt(new Date());
-		user.setUpdater(updater);
+		user.setUpdater(getUserCode(request));
 		return userService.update(user);
 	}
 	

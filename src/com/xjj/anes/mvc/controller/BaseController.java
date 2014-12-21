@@ -40,6 +40,10 @@ public class BaseController
 	public String getUserName(HttpServletRequest request)	{
 		return getLoginUser(request).getName();
 	}
+	
+	public String getUserCode(HttpServletRequest request)	{
+		return getLoginUser(request).getCode();
+	}
 
 	/**
 	 * 1. 将字段中String类型转换为Date类型
