@@ -16,4 +16,5 @@ public interface WorkService {
 
 	ResultBean delete(String id);
 
+	ResultBean workAnlys(Work work);
 }

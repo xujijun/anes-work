@@ -101,7 +101,7 @@
 	
 	<sql id="searchWhere">
 		<where>
-		<if test="entity.operationName != null and entity.operationName != '' "> AND (A.operationName LIKE CONCAT('%',REPLACE(REPLACE(TRIM(#{entity.operationName}), '%', '/%'), '_', '/_'), '%') ESCAPE '/' )</if>
+		<if test="entity.operationName != null and entity.operationName != '' "> AND (A.operation_name LIKE CONCAT('%',REPLACE(REPLACE(TRIM(#{entity.operationName}), '%', '/%'), '_', '/_'), '%') ESCAPE '/' )</if>
 		<if test="entity.department != null and entity.department != ''">AND A.department=#{entity.department}</if>
 		<if test="entity.startDt != null and entity.startDt != ''">AND DATE(A.operation_dt) <![CDATA[ >= ]]> #{entity.startDt}</if>
 		<if test="entity.endDt != null and entity.endDt != ''">AND DATE(A.operation_dt) <![CDATA[ <= ]]> #{entity.endDt}</if>
@@ -143,7 +143,7 @@
 	<update id="delete">
 		 DELETE FROM t_anes_work WHERE ID=#{id}
 	</update>
-	
+		
 	<select id="selectById" parameterType="string" resultType="work">
 		SELECT
 		<include refid="selectColumns" />
@@ -157,5 +157,20 @@
 		FROM t_anes_work A
 		WHERE A.anesthetist_id=#{anesthetistId} 
 	</select>
+	
+	<select id="workAnalyze" resultType="com.xjj.anes.bean.anes.WorkAnalysisVo">
+		SELECT B.name as anesthetistName, count(B.name) as optNo, SUM(A.pump) AS pumpNo, SUM(A.dezocine) AS dezocineNo, SUM(A.mepivacaine) AS mepivacaineNo
+		FROM t_anes_work A
+		LEFT JOIN t_anes_anesthetist B ON A.anesthetist_id=B.id
+		<include refid="anlysWhere" />
+		GROUP BY B.name
+	</select>
+	<sql id="anlysWhere">
+		<where>
+		<if test="department != null and department != ''">AND A.department=#{department}</if>
+		<if test="startDt != null and startDt != ''">AND DATE(A.operation_dt) <![CDATA[ >= ]]> #{startDt}</if>
+		<if test="endDt != null and endDt != ''">AND DATE(A.operation_dt) <![CDATA[ <= ]]> #{endDt}</if>
+		</where>
+	</sql>
 	
 </mapper>

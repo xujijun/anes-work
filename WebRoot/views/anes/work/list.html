@@ -24,7 +24,7 @@
 </head>
 <body style="overflow-y: hidden; overflow-x: hidden;">
 	<div class="divCover"></div>
-	<form id="userSearchForm">
+	<form id="workSearchForm">
 		<!-- BEGIN 内容区-->
 		<div class="main-big">
 			<div class="main-b-box">
@@ -60,6 +60,9 @@
 							<div class="btn-group">
 								<button type="button" id="addUser" class="btn green perm" permissionId="anes-work-insert">
 									新增工作量 <i class="icon-plus"></i>
+								</button>
+								<button type="button" id="exportExcel" class="btn green perm" permissionId="anes-work-exportExcel">
+									导出Excel <i class="icon-plus"></i>
 								</button>
 							</div>
 						</div>
@@ -135,7 +138,7 @@
 		
 		function loadRecords() {
 			topLoading();
-			$.post(getContextPath() + "/api/anes/work/search", $("#userSearchForm").serialize(), function(resultBean, status, request) {
+			$.post(getContextPath() + "/api/anes/work/search", $("#workSearchForm").serialize(), function(resultBean, status, request) {
 				topLoaded();
 				if (!handleAjaxRequest(resultBean, status, request)) {
 					return;
@@ -191,6 +194,14 @@
 			$("#userSearchForm")[0].reset();
 			loadRecords();
 		});
+		
+		$("#exportExcel").click(function() {
+			window.location.href=getContextPath() + "/api/anes/work/exportExcel?" + $("#workSearchForm").serialize(); 
+		});
+		
+		/* function exportExcel(){
+			window.location.href=getContextPath() + "/api/anes/work/exportExcel?" + $("#searchForm").serialize(); 
+		} */
 	</script>
 </body>
 </html>

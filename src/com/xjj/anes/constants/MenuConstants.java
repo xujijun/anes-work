@@ -32,6 +32,8 @@ public class MenuConstants {
 		public final static String ANES_ANESTHETIST = "anes-anesthetist";
 		/** 工作量管理 */
 		public final static String ANES_WORK = "anes-work";
+		/** 工作量统计 */
+		public final static String ANES_ANLYS = "anes-anlys";
 	}
 
 }

@@ -16,9 +16,9 @@ public class Work extends CoreEntity {
 	private String operationName;
 	private String anesMethod;
 	private String anesthetistId;
-	private int pump;
-	private int dezocine;
-	private int mepivacaine;
+	private Integer pump;
+	private Integer dezocine;
+	private Integer mepivacaine;
 	
 	//查询字段
 	private Date startDt;
@@ -94,22 +94,22 @@ public class Work extends CoreEntity {
 	public void setAnesthetistId(String anesthetistId) {
 		this.anesthetistId = anesthetistId;
 	}
-	public int getPump() {
+	public Integer getPump() {
 		return pump;
 	}
-	public void setPump(int pump) {
+	public void setPump(Integer pump) {
 		this.pump = pump;
 	}
-	public int getDezocine() {
+	public Integer getDezocine() {
 		return dezocine;
 	}
-	public void setDezocine(int dezocine) {
+	public void setDezocine(Integer dezocine) {
 		this.dezocine = dezocine;
 	}
-	public int getMepivacaine() {
+	public Integer getMepivacaine() {
 		return mepivacaine;
 	}
-	public void setMepivacaine(int mepivacaine) {
+	public void setMepivacaine(Integer mepivacaine) {
 		this.mepivacaine = mepivacaine;
 	}
 	public String getAnesthetistName() {

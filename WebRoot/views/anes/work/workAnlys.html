@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="../../resources/style/page.public.css" rel="stylesheet" />
+<link href="../../resources/style/page.table.css" rel="stylesheet" />
+<link href="../../resources/style/sys.css" rel="stylesheet" />
+<link href="../../resources/xyt-pager/style.css" rel="stylesheet" />
+<script src="../../resources/js-plug/jquery/jquery-1.9.1.js"></script>
+<script src="../../resources/js-plug/sys.js"></script>
+<script src="../../resources/js-plug/My97DatePicker/WdatePicker.js"></script>
+<link href="../../resources/xyt-select/style.css" rel="stylesheet" />
+<style type="text/css">
+.table-group input,.table-group select {
+	color: gray;
+}
+</style>
+</head>
+<body style="overflow-y: hidden; overflow-x: hidden;">
+	<div class="divCover"></div>
+	<form id="anlysSearchForm">
+		<!-- BEGIN 内容区-->
+		<div class="main-big">
+			<div class="main-b-box">
+				<!-- BEGIN table组件-->
+				<div class="main-b-contentbox">
+					<div class="contentbox-title-nav">
+						<div class="navigations">
+							<ul>
+								<li><a href="#">首页</a> <span>&gt;</span></li>
+								<li><a href="#" id="systemMenuName">工作量管理</a> <span>&gt;</span></li>
+								<li><a href="#">工作量统计</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="contentbox-body">
+						<div class="table-query">
+							<div class="table-group query-inline-num5" permissionId="anes-work-search" >
+								<input type="text" name="startDt" id="startDt" placeholder="时间（起）" readonly="readonly" class="Wdate middleinput" _type='WdatePicker' onclick="WdatePicker({isShowClear:true,readOnly:true,maxDate:'%y-%M-#{%d}'});" />
+								<input type="text" name="endDt" id="endDt" placeholder="时间（止）" readonly="readonly" class="Wdate middleinput" _type='WdatePicker' onclick="WdatePicker({isShowClear:true,readOnly:true,maxDate:'%y-%M-#{%d}'});" />
+								
+								<select name="department" data="getLocalDict('DEPARTMENT')" blanklabel="所属科室">
+								</select>
+
+								<button type="button" id='but-search' permissionId="anes-anlys-anlys" class="perm"
+									onclick="loadRecords()">统计</button>
+								<button type="button" class="perm" id="resetButton">重置</button>
+							</div>
+						</div>
+						<div class="table-toolbar">
+							<div class="btn-group">
+								<button type="button" id="exportExcel" class="btn green perm" permissionId="anes-anlys-exportExcel">
+									导出Excel <i class="icon-plus"></i>
+								</button>
+							</div>
+						</div>
+						<div class="table-scrollable">
+							<div class="table-wrapper">
+								<table class="table table-striped table-hover table-bordered">
+									<thead>
+										<tr>
+											<th style="width:15%">时间</th>
+											<th style="width:10%">麻醉医生</th>
+											<th style="width:10%">手术数量</th>
+											<th style="width:10%">术后止痛泵数量</th>
+											<th style="width:10%">地佐辛数量</th>
+											<th style="width:10%">甲哌卡因数量</th>
+										</tr>
+									</thead>
+									<tbody id="loadRecordsContent">
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="page-scrollable">
+							<div class="table-pages">
+								<div id="xyt-pager"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			loadRecords();
+
+			$(".table-query input").addClass("gr_class");
+			$(".table-query input").focus(function() {
+				$(this).removeClass("gr_class");
+				$(this).css({
+					"color" : "black"
+				});
+			});
+			$(".table-query input").blur(function() {
+				if ('' == $(this).val() || $(this).val() == $(this).attr('placeholder')) {
+					$(this).removeClass("bl_class");
+					$(this).css({
+						"color" : "gray"
+					});
+				} else {
+					$(this).removeClass("gr_class");
+					$(this).css({
+						"color" : "black"
+					});
+				}
+			});
+			$("#userSearchForm").on("keyup", function(e) {
+				if (e.which == 13) {
+					loadRecords();
+				}
+			});
+		});
+		
+		function loadRecords() {
+			showLoading();
+			$.post(getContextPath() + "/api/anes/workAnlys/anlys", $("#anlysSearchForm").serialize(), function(resultBean, status, request) {
+				if (!handleAjaxRequest(resultBean, status, request)) {
+					return;
+				}
+				$("#loadRecordsContent").html("");
+				var beanList = resultBean.data;
+				var bean = "";
+				var s = beanList.length;
+				for (var i = 0; i < s; i++) {
+					bean = beanList[i];
+					var content = new Array(bean.searchDate, bean.anesthetistName, bean.optNo, bean.pumpNo, bean.dezocineNo, bean.mepivacaineNo);
+					appendTrToTBody(i, "loadRecordsContent", content);
+				}
+				drawChart(beanList);
+			}, 'json');
+		}
+		
+		initXytItem();
+		
+		$("#resetButton").click(function() {
+			$("#userSearchForm")[0].reset();
+			loadRecords();
+		});
+		
+		$("#exportExcel").click(function() {
+			window.location.href=getContextPath() + "/api/anes/workAnlys/exportExcel?" + $("#anlysSearchForm").serialize(); 
+		});
+		
+		/* function exportExcel(){
+			window.location.href=getContextPath() + "/api/anes/work/exportExcel?" + $("#searchForm").serialize(); 
+		} */
+	</script>
+	
+	<div id="chart" style="width:650px;height:400px">
+    	统计中，请稍候……
+    </div>
+
+	<script src="../../resources/js-plug/echarts-2.0.3/build/echarts-plain.js"></script>
+	<script>
+		var myChart = echarts.init(document.getElementById('chart'));
+		
+		function showLoading(){
+			myChart.showLoading({
+			    text : "统计中……",
+			    effect : "ring",
+			    textStyle : {
+			        fontSize : 12
+			    }
+			});
+		}
+		
+		function drawChart(beanList){
+			var option;
+			
+			//初始化数据
+			var xValues = new Array();	//x坐标的值
+			var optNo = new Array();
+			var pumpNo = new Array();
+			var dezocineNo = new Array();
+			var mepivacaineNo = new Array();
+			$.each(beanList, function(index, entity) {
+				xValues.push(entity.anesthetistName);
+				optNo.push(entity.optNo);
+				pumpNo.push(entity.pumpNo);
+				dezocineNo.push(entity.dezocineNo);
+				mepivacaineNo.push(entity.mepivacaineNo);
+			});
+			if(beanList.length==0){
+				myChart.hideLoading();
+				myChart.clear();
+				_message("没有数据可以展示！");
+				return;
+			}
+			myChart.clear();
+
+			option = {
+				    tooltip : {
+				        trigger: 'item',
+				        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+				            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+				        }
+				    },
+				    legend: {
+				        data:['手术数量', '术后止痛泵数量', '地佐辛数量', '甲哌卡因数量']
+				    },
+				    toolbox: {
+				        show : true,
+				        orient: 'vertical',
+				        x: 'right',
+				        y: 'center',
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    calculable : true,
+				    xAxis : [
+				        {
+				        	axisLabel : {
+				        		interval : 0,
+				        		rotate : 30
+				        	},
+				            type : 'category',
+				            data : xValues	//['2010','2011','2012','2013','2014']
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value'
+				        }
+				    ],
+				    series : [
+				        {
+				            name:'手术数量',
+				            type:'bar',
+				            data: optNo //[320, 332, 301, 334, 390, 330, 320]
+				        },
+				        {
+				            name:'术后止痛泵数量',
+				            type:'bar',
+				            data: pumpNo //[120, 132, 101, 134, 90, 230, 210]
+				        },
+				        {
+				            name:'地佐辛数量',
+				            type:'bar',
+				            data: dezocineNo //[120, 132, 101, 134, 90, 230, 210]
+				        },
+				        {
+				            name:'甲哌卡因数量',
+				            type:'bar',
+				            data: mepivacaineNo //[220, 182, 191, 234, 290, 330, 310]
+				        }
+				    ],
+				    color :  [ 
+				              '#ff7f50', '#87cefa', '#da70d6', '#32cd32' 
+				          ]	//颜色序列，循环使用，去掉这个选项则为默认颜色
+		         /*  color :  [ 
+				              '#ff7f50', '#87cefa', '#da70d6', '#32cd32', '#6495ed', 
+				              '#ff69b4', '#ba55d3', '#cd5c5c', '#ffa500', '#40e0d0', 
+				              '#1e90ff', '#ff6347', '#7b68ee', '#00fa9a', '#ffd700', 
+				              '#6b8e23', '#ff00ff', '#3cb371', '#b8860b', '#30e0e0' 
+						          ]  */      
+				};
+			
+			myChart.hideLoading();
+			myChart.setOption(option);
+		}
+	</script>	
+</body>
+</html>
