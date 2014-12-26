@@ -45,10 +45,12 @@
 								<input type="text" name="startDt" id="startDt" placeholder="时间（起）" readonly="readonly" class="Wdate middleinput" _type='WdatePicker' onclick="WdatePicker({isShowClear:true,readOnly:true,maxDate:'%y-%M-#{%d}'});" />
 								<input type="text" name="endDt" id="endDt" placeholder="时间（止）" readonly="readonly" class="Wdate middleinput" _type='WdatePicker' onclick="WdatePicker({isShowClear:true,readOnly:true,maxDate:'%y-%M-#{%d}'});" />
 								
-								<input type="text" name="operationName" placeholder='手术名称' value=""/> <label></label>
+								<!-- <input type="text" name="operationName" placeholder='手术名称' value=""/> <label></label> -->
 
-								<select name="department" data="getLocalDict('DEPARTMENT')" blanklabel="所属科室">
-								</select>
+								<!-- 麻醉医生 -->
+								<select name="anesthetistId" id="anesthetistId" class="middleinput"></select>
+								
+								<select name="department" data="getLocalDict('DEPARTMENT')" blanklabel="所属科室"></select>
 
 
 								<button type="button" id='but-search' permissionId="anes-work-search" class="perm"
@@ -103,10 +105,22 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			createPager("loadRecords", "xyt-pager");
+			
+			initXytItem();
+			
 			$("#addUser").click(function() {
 				var temp_url = getContextPath() + "/views/anes/work/addOrEdit.html";
 				_Dialog('新增工作量', temp_url, loadRecords);
 			});
+			$("#resetButton").click(function() {
+				$("#workSearchForm")[0].reset();
+				loadRecords();
+			});
+			$("#exportExcel").click(function() {
+				window.location.href=getContextPath() + "/api/anes/work/exportExcel?" + $("#workSearchForm").serialize(); 
+			});
+			
+			loadAnesthetistList();
 			loadRecords();
 
 			$(".table-query input").addClass("gr_class");
@@ -129,11 +143,11 @@
 					});
 				}
 			});
-			$("#userSearchForm").on("keyup", function(e) {
+			/* $("#userSearchForm").on("keyup", function(e) {
 				if (e.which == 13) {
 					loadRecords();
 				}
-			});
+			}); */
 		});
 		
 		function loadRecords() {
@@ -188,16 +202,14 @@
 			}, 'json');
 		}
 		
-		initXytItem();
-		
-		$("#resetButton").click(function() {
-			$("#userSearchForm")[0].reset();
-			loadRecords();
-		});
-		
-		$("#exportExcel").click(function() {
-			window.location.href=getContextPath() + "/api/anes/work/exportExcel?" + $("#workSearchForm").serialize(); 
-		});
+		function loadAnesthetistList(){
+			reqUrl=getContextPath() + "/api/anes/anesthetist/selectAllValid";
+			$.ajax({type:"GET",dataType:"json",url:reqUrl,async:false,success:function(resultBean, status, xhRequest) {
+					if(!handleAjaxRequest(resultBean, status,xhRequest)){return;}
+					fillSelect($("#anesthetistId"), resultBean.data, "麻醉医生");
+				}
+			});
+		}
 		
 		/* function exportExcel(){
 			window.location.href=getContextPath() + "/api/anes/work/exportExcel?" + $("#searchForm").serialize(); 
