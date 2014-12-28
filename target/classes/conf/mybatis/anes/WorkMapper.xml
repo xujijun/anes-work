@@ -103,6 +103,7 @@
 		<where>
 		<if test="entity.operationName != null and entity.operationName != '' "> AND (A.operation_name LIKE CONCAT('%',REPLACE(REPLACE(TRIM(#{entity.operationName}), '%', '/%'), '_', '/_'), '%') ESCAPE '/' )</if>
 		<if test="entity.department != null and entity.department != ''">AND A.department=#{entity.department}</if>
+		<if test="entity.anesthetistId != null and entity.anesthetistId != ''">AND A.anesthetist_id=#{entity.anesthetistId}</if>
 		<if test="entity.startDt != null and entity.startDt != ''">AND DATE(A.operation_dt) <![CDATA[ >= ]]> #{entity.startDt}</if>
 		<if test="entity.endDt != null and entity.endDt != ''">AND DATE(A.operation_dt) <![CDATA[ <= ]]> #{entity.endDt}</if>
 		</where>

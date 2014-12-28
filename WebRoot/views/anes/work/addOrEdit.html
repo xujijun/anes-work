@@ -172,7 +172,7 @@
 			$.ajax({type:"GET",dataType:"json",url:reqUrl,async:false,success:function(resultBean, status, xhRequest) {
 					if(!handleAjaxRequest(resultBean, status,xhRequest)){return;}
 					
-					fillSelect($("#anesthetistId"), resultBean.data, "医生选择");
+					fillSelect($("#anesthetistId"), resultBean.data, "麻醉医生");
 					loadWork(id);
 				}
 			});

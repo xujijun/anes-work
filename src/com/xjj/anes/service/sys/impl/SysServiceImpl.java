@@ -27,6 +27,7 @@ import com.xjj.anes.annotation.SysMenu;
 import com.xjj.anes.bean.common.LoginUser;
 import com.xjj.anes.bean.common.ResultBean;
 import com.xjj.anes.cache.CacheConstants;
+import com.xjj.anes.cache.CacheManager;
 import com.xjj.anes.constants.CommonConstants;
 import com.xjj.anes.constants.SysConstants;
 import com.xjj.anes.constants.WebConstant;
@@ -166,7 +167,9 @@ public class SysServiceImpl implements SysService {
 		String menuId = null;
 		SysMenu sysMenu = null;
 		Menu menu = null;
-		RequestMapping menuRm = null;
+		RequestMapping menuRm = null, methodRm = null; //类中的RequestMapping和方法中的RequestMapping
+		String[] menuValues = null, methodValues = null; //RequstMapping中的“value”
+		Map<String, String> uriPermissionMap = new HashMap<String, String>();//存放键值对： uri（class和method中的RequestMapping value） : permission_id
 		
 		Set<String> permissionIdSet = new HashSet<String>();
 		PermissionChecking permissionChecking = null;
@@ -247,6 +250,19 @@ public class SysServiceImpl implements SysService {
 				//Test only
 				//System.out.println(permissionChecking.name());
 				
+				methodRm = AnnotationUtils.findAnnotation(method, RequestMapping.class);
+				
+				if (menuRm == null && permissionChecking != null) { //如果该类没有RequestMapping
+					throw new RuntimeException("Loss Class RequestMapping at " + cls.getName());
+				}
+				menuValues = menuRm.value();
+				methodValues = methodRm.value();
+				for (String menuValue : menuValues) {
+					for (String methodValue : methodValues) {
+						uriPermissionMap.put(menuValue + methodValue, permissionChecking.id() == null ? permissionChecking.equals() : permissionChecking.id());
+					}
+				}
+				
 				//检查是否有重复的Permission ID
 				if(permissionIdSet.contains(permissionChecking.id())) {
 					result=false;
@@ -276,20 +292,23 @@ public class SysServiceImpl implements SysService {
 			}
 		}
 		
-		//删除扫描列表中没有的Menu及其关联表
+		//删除扫描列表中没出现的Menu及其关联表
 		for (String id : menuMap.keySet()) {
 			if (!menuIdSet.contains(id)) {
 				log.info("Delete Menu[" + id + "] " + menuMap.get(id));
 				menuDao.deleteMenuAndRel(id);
 			}
 		}
-		
+		//删除扫描列表中没出现的Permission及其关联表
 		for(String id : permissionMap.keySet()){
 			if(!permissionIdSet.contains(id)){
 				log.info("Delete Permission[" + id + "] " + permissionMap.get(id));
 				permissionDao.deletePermissionAndRel(id);
 			}
 		}
+		
+		//把uri-permissionId映射关系存入缓存中。以后，在Interceptor中，可以根据请求的uri查找到相对应的permissionId
+		CacheManager.getInstance().put(CacheConstants.UriPermissionIdMap, uriPermissionMap);
 		
 		log.info("Menus and Permissions scanned.");
 		return result;
