@@ -6,15 +6,16 @@ import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.xjj.anes.dao.BaseDao;
 import com.xjj.anes.entity.PagerEntity;
 import com.xjj.anes.entity.sys.Role;
 import com.xjj.anes.entity.sys.RoleMenu;
 import com.xjj.anes.entity.sys.RolePermission;
 
-public interface RoleDao {
-	public Role selectById(@Param("id") String id);
+public interface RoleDao extends BaseDao<Role> {
+	//public Role selectById(@Param("id") String id);
 	
-	public int insert(Role entity);
+	//public int insert(Role entity);
 	
 	public List<Role> selectAllValid();
 	
@@ -40,7 +41,7 @@ public interface RoleDao {
 	// 删除角色及其关联表
 	public int deleteRoleAndRel(@Param("id") String id);
 
-	public int update(Role role);
+	//public int update(Role role);
 
 	public List<Map<String, String>> getSystemMenus();
 
