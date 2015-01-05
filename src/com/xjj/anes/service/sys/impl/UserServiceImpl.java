@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResultBean select(String id) {
 		ResultBean rb = new ResultBean();
-		rb.setData(userDao.select(id));
+		rb.setData(userDao.selectById(id));
 		return rb;
 	}
 
